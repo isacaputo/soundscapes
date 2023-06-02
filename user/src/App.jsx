@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import * as Tone from "tone";
-import { Sequence } from "tone";
-
 import "./App.css";
 
 let osc;
@@ -10,7 +8,7 @@ let birdSample;
 const initialSeq = ["C4", "E4", "G4", "B4", "C5", "A4"];
 function App() {
   // const [count, setCount] = useState(0);
-  const [isOscOn, setIsOscOn] = useState(false);
+  // const [isOscOn, setIsOscOn] = useState(false);
   const [oscs, setOscs] = useState([]);
   const [synth, setSynth] = useState(new Tone.Synth().toDestination());
   const [input, setInput] = useState();
@@ -47,9 +45,9 @@ function App() {
   function playSynth() {
     // let synth = new Tone.Synth().toDestination();
     setSequence(initialSeq);
-    if (loop) {
-      loop.start();
-    }
+    // if (loop) {
+    //   loop.start();
+    // }
     const newLoop = new Tone.Loop(loopA, "6n").start(0);
     setLoop(newLoop);
     Tone.Transport.start();
@@ -76,8 +74,8 @@ function App() {
     setSequence((prevSequence) => {
       const newSequence = [...prevSequence];
       const currentNote = newSequence[index];
-      const currentNoteIndex = notes.indexOf(currentNote.charAt(0));
-      const currentOctave = parseInt(currentNote.charAt(1));
+      const currentNoteIndex = notes.indexOf(currentNote.charAt(0)); // A
+      const currentOctave = parseInt(currentNote.charAt(1)); // 3
       const newNoteIndex = (currentNoteIndex + 1) % notes.length;
       const newOctave =
         currentOctave + Math.floor((currentNoteIndex + 1) / notes.length);
