@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 import * as Tone from "tone";
 import "./App.css";
@@ -94,7 +94,8 @@ const compass = 8;
 export default function App() {
   const [tempo, setTempo] = useState(1);
   const [play, setPlay] = useState(false);
-  const [tempoRepresentation, setTempoRepresentation] = useState(false);
+  const [countTempo, setCountTempo] = useState(null);
+  const intervalRef = useRef();
 
   const [backgroundSequence, setBackgroundSequence] = useState(
     Array.from({ length: compass * 4 }).fill(null)
@@ -114,9 +115,30 @@ export default function App() {
     return index % 8 === 0;
   };
 
-  useEffect(() => {
-    // piano.chain(reverb, chorus).toDestination();
+  const startCountTempo = () => {
+    setCountTempo(0);
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setCountTempo((previous) => previous + 1);
+    }, 500);
+  };
 
+  const stopCountTempo = () => {
+    setCountTempo(null);
+    clearInterval(intervalRef.current);
+  };
+
+  console.log("countTempo", countTempo);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     const bSequence = new Tone.Sequence(
       (time, note) => {
         setPlay(true);
@@ -139,14 +161,18 @@ export default function App() {
       bSequence.clear();
       mSequence.clear();
     };
-  }, [tempo, backgroundSequence, mainSequence]);
+  }, [tempo, backgroundSequence, mainSequence, countTempo, intervalRef]);
 
   const handleTogglePlay = () => {
     const nextPlayState = !play;
     if (nextPlayState) {
       Tone.Transport.start();
+      console.log("start");
+      startCountTempo();
     } else {
       Tone.Transport.stop();
+      console.log("stop");
+      stopCountTempo();
     }
     setPlay(nextPlayState);
   };
@@ -226,12 +252,7 @@ export default function App() {
                     const toB = countBlock * notesPerCompass;
                     if (subIndex >= fromB && subIndex < toB) {
                       return (
-                        <div
-                          key={`${index}-${subIndex}`}
-                          className={`notes ${
-                            tempoRepresentation && "tempoVisible"
-                          }`}
-                        >
+                        <div key={`${index}-${subIndex}`} className={`notes`}>
                           {renderNotesMainSequence(subIndex)}
                         </div>
                       );
