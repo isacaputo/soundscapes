@@ -40,3 +40,72 @@
 .read-the-docs {
   color: #888;
 } */
+
+.main-sequence {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.main-sequence .notes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.main-sequence .note {
+  width: 30px;
+  height: 24px;
+  background-color: #cccc;
+  display: block;
+}
+
+.main-sequence .note.active {
+  background-color: purple;
+}
+
+.main-sequence .compass {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.back-sequence {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.back-sequence .back-compass {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+}
+
+.back-sequence .note {
+  width: 308px;
+  height: 38px;
+  background-color: #cccccc;
+  display: block;
+}
+
+.back-sequence .note.active {
+  width: 308px;
+  height: 38px;
+  background-color: #4000ff;
+  display: block;
+}
+
+.back-sequence .notes.tempoVisible {
+  width: 308px;
+  height: 38px;
+  background-color: #aaff00;
+  display: block;
+}
