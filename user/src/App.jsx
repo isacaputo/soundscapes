@@ -162,17 +162,15 @@ export default function App() {
       bSequence.clear();
       mSequence.clear();
     };
-  }, [tempo, backgroundSequence, mainSequence, countTempo, intervalRef]);
+  }, [tempo, backgroundSequence, mainSequence]);
 
   const handleTogglePlay = () => {
     const nextPlayState = !play;
     if (nextPlayState) {
       Tone.Transport.start();
-      console.log("start");
       startCountTempo();
     } else {
       Tone.Transport.stop();
-      console.log("stop");
       stopCountTempo();
     }
     setPlay(nextPlayState);
