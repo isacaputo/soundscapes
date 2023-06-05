@@ -60,6 +60,13 @@
   display: block;
 }
 
+.main-sequence .tempoVisible {
+  width: 30px;
+  height: 24px;
+  background-color: #b7ff00cc;
+  display: block;
+}
+
 .main-sequence .note.active {
   background-color: purple;
 }
@@ -100,12 +107,5 @@
   width: 308px;
   height: 38px;
   background-color: #4000ff;
-  display: block;
-}
-
-.back-sequence .notes.tempoVisible {
-  width: 308px;
-  height: 38px;
-  background-color: #aaff00;
   display: block;
 }

@@ -119,7 +119,7 @@ export default function App() {
     setCountTempo(0);
     clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
-      setCountTempo((previous) => previous + 1);
+      setCountTempo((previous) => (previous === 31 ? 0 : previous + 1));
     }, 500);
   };
 
@@ -129,6 +129,7 @@ export default function App() {
   };
 
   console.log("countTempo", countTempo);
+  console.log(backgroundSequence, mainSequence);
 
   useEffect(() => {
     return () => {
@@ -224,7 +225,11 @@ export default function App() {
 
       return (
         <div
-          className={`note ${isMainNoteActive && "active"}`}
+          className={
+            countTempo === indexCompass
+              ? "tempoVisible"
+              : `note ${isMainNoteActive && "active"}`
+          }
           key={`${indexCompass}-${indexNote}`}
           onClick={() =>
             handleToggleNoteMainSeq(note, indexCompass, isMainNoteActive)
