@@ -2,10 +2,10 @@ import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 import * as Tone from "tone";
 import "./App.css";
-import { styled } from "@mui/material/styles";
-import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import { purple } from "@mui/material/colors";
+import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
+import StopCircleIcon from "@mui/icons-material/StopCircle";
+import { IconButton } from "@mui/material";
 
 // notes = ["C", "D", "E", "F", "G", "A", "B"]
 // octaves = [3, 4, 5]
@@ -13,11 +13,17 @@ import { purple } from "@mui/material/colors";
 // C, D, E, F, G, A, B
 // 1. Dó | 2. Ré | 3. Mi | 4. Fa | 5. Sol | 6. Lá | 7. Si  ()
 
-// const chorus = new Tone.Chorus(1.2, 0.3, 0.7).toDestination();
-// const reverb = new Tone.Reverb({
-//   decay: 1.5,
-//   wet: 1,
-// }).toDestination();
+const reverb = new Tone.Reverb({
+  decay: 1.5,
+  wet: 1,
+}).toDestination();
+
+const tremolo = new Tone.Tremolo({
+  frequency: 1, // step="0.5" min="1" max="15
+  depth: 0.8,
+})
+  .toDestination()
+  .start();
 
 const piano = new Tone.Sampler({
   urls: {
@@ -53,16 +59,33 @@ const piano = new Tone.Sampler({
     C8: "C8.mp3",
   },
   baseUrl: "https://tonejs.github.io/audio/salamander/",
-}).toDestination();
+})
+  .chain(tremolo, reverb)
+  .toDestination();
 
-// const synth = new Tone.MonoSynth({
-//   oscillator: {
-//     type: "square",
-//   },
-//   envelope: {
-//     attack: 0.1,
-//   },
-// }).toDestination();
+const amSynth = new Tone.AMSynth().connect(tremolo).toDestination();
+const fmSynth = new Tone.FMSynth().connect(tremolo).toDestination();
+const basicSynth = new Tone.Synth({
+  volume: -10,
+}).toDestination();
+const membraneSynth = new Tone.MembraneSynth().toDestination();
+const pluckySynth = new Tone.PluckSynth().toDestination();
+const monoSynth = new Tone.MonoSynth({
+  oscillator: {
+    type: "square",
+  },
+  envelope: {
+    attack: 0,
+  },
+  volume: -10,
+}).toDestination();
+const sampler = new Tone.Sampler({
+  urls: {
+    A1: "A1.mp3",
+    A2: "A2.mp3",
+  },
+  baseUrl: "https://tonejs.github.io/audio/casio/",
+}).toDestination();
 
 const backgroundNotes = [
   "A2",
@@ -91,11 +114,31 @@ const chunkSequence = (sequence, size) => {
 const notesPerCompass = 4;
 const compass = 8;
 
+// todo
+const InstrumentMap = {
+  piano: piano,
+  amSynth: amSynth,
+};
+
 export default function App() {
+  const [backgroundInstrument, setBackgroundInstrument] = useState(piano);
+  const [mainInstrument, setMainInstrument] = useState(piano);
   const [tempo, setTempo] = useState(1);
   const [play, setPlay] = useState(false);
   const [countTempo, setCountTempo] = useState(null);
   const intervalRef = useRef();
+  const [backgroundVolume, setBackgroundVolume] = useState(-10);
+  const [mainVolume, setMainVolume] = useState(-10);
+
+  const handleChangeBackVolume = (event, newValue) => {
+    // const vol = new Tone.Volume(newValue).toDestination();
+    setBackgroundVolume(newValue);
+  };
+
+  const handleChangeMainVolume = (event, newValue) => {
+    // const vol = new Tone.Volume(newValue).toDestination();
+    setMainVolume(newValue);
+  };
 
   const [backgroundSequence, setBackgroundSequence] = useState(
     Array.from({ length: compass * 4 }).fill(null)
@@ -115,11 +158,21 @@ export default function App() {
     return index % 8 === 0;
   };
 
+  const handleClickBackInstrument = (instrument) => {
+    setBackgroundInstrument(instrument);
+  };
+
+  const handleClickMainInstrument = (instrument) => {
+    setMainInstrument(instrument);
+  };
+
   const startCountTempo = () => {
     setCountTempo(0);
     clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
-      setCountTempo((previous) => (previous === 31 ? 0 : previous + 1));
+      setCountTempo((previous) =>
+        previous === mainSequence.length - 1 ? 0 : previous + 1
+      );
     }, 500);
   };
 
@@ -127,9 +180,6 @@ export default function App() {
     setCountTempo(null);
     clearInterval(intervalRef.current);
   };
-
-  console.log("countTempo", countTempo);
-  console.log(backgroundSequence, mainSequence);
 
   useEffect(() => {
     return () => {
@@ -143,7 +193,11 @@ export default function App() {
     const bSequence = new Tone.Sequence(
       (time, note) => {
         setPlay(true);
-        piano.triggerAttackRelease(note, tempo * notesPerCompass, time);
+        backgroundInstrument.triggerAttackRelease(
+          note,
+          tempo * notesPerCompass,
+          time
+        );
       },
       chunkSequence(backgroundSequence, 2),
       tempo
@@ -152,7 +206,7 @@ export default function App() {
     const mSequence = new Tone.Sequence(
       (time, note) => {
         setPlay(true);
-        piano.triggerAttackRelease(note, tempo, time);
+        mainInstrument.triggerAttackRelease(note, tempo, time);
       },
       mainSequence,
       0.5
@@ -162,7 +216,13 @@ export default function App() {
       bSequence.clear();
       mSequence.clear();
     };
-  }, [tempo, backgroundSequence, mainSequence]);
+  }, [
+    tempo,
+    backgroundSequence,
+    mainSequence,
+    backgroundInstrument,
+    mainInstrument,
+  ]);
 
   const handleTogglePlay = () => {
     const nextPlayState = !play;
@@ -171,6 +231,7 @@ export default function App() {
       startCountTempo();
     } else {
       Tone.Transport.stop();
+      // backgroundInstrument.dispose();
       stopCountTempo();
     }
     setPlay(nextPlayState);
@@ -179,7 +240,7 @@ export default function App() {
   const handleToggleNoteBackSeq = (note, index, isBackNoteActive) => {
     if (!isBackNoteActive) {
       const now = Tone.now();
-      piano.triggerAttackRelease(note, "8n", now);
+      backgroundInstrument.triggerAttackRelease(note, "8n", now);
     }
     const copyBackgroundSequence = [...backgroundSequence];
     copyBackgroundSequence[index] =
@@ -193,7 +254,7 @@ export default function App() {
   const handleToggleNoteMainSeq = (note, index, isMainNoteActive) => {
     if (!isMainNoteActive) {
       const now = Tone.now();
-      piano.triggerAttackRelease(note, "8n", now);
+      mainInstrument.triggerAttackRelease(note, "8n", now);
     }
     const copyMainSequence = [...mainSequence];
     copyMainSequence[index] =
@@ -223,11 +284,7 @@ export default function App() {
 
       return (
         <div
-          className={
-            countTempo === indexCompass
-              ? "tempoVisible"
-              : `note ${isMainNoteActive && "active"}`
-          }
+          className={`note ${isMainNoteActive ? "active" : ""}`}
           key={`${indexCompass}-${indexNote}`}
           onClick={() =>
             handleToggleNoteMainSeq(note, indexCompass, isMainNoteActive)
@@ -241,51 +298,177 @@ export default function App() {
   let countBlock = 0;
 
   return (
-    <>
-      <div className="board">
-        <div className="main-sequence">
-          {mainSequence.map((_, index) => {
-            if (getNext4ndIndex(index)) {
-              countBlock++;
-              return (
-                <div className="compass" key={index}>
-                  {mainSequence.map((_, subIndex) => {
-                    const fromB =
-                      countBlock * notesPerCompass - notesPerCompass;
-                    const toB = countBlock * notesPerCompass;
-                    if (subIndex >= fromB && subIndex < toB) {
-                      return (
-                        <div key={`${index}-${subIndex}`} className={`notes`}>
-                          {renderNotesMainSequence(subIndex)}
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
-                </div>
-              );
-            }
-          })}
-        </div>
-
-        <div className="back-sequence">
-          {backgroundSequence.map((note, index) => {
-            if (getNext8ndIndex(index)) {
-              return (
-                <div className="back-compass" key={index}>
-                  {renderNotesBackSequence(index)}
-                </div>
-              );
-            }
-            return null;
-          })}
-        </div>
-        <Grid>
-          <Button variant="contained" size="large" onClick={handleTogglePlay}>
-            {play ? "stop" : "play"}
-          </Button>
-        </Grid>
+    <div className="board">
+      <img src={`/images/soundscapes-logo.png`} className="logo-image" />
+      <div className="main-sequence">
+        {mainSequence.map((_, index) => {
+          if (getNext4ndIndex(index)) {
+            countBlock++;
+            return (
+              <div className="compass" key={index}>
+                {mainSequence.map((_, subIndex) => {
+                  const fromB = countBlock * notesPerCompass - notesPerCompass;
+                  const toB = countBlock * notesPerCompass;
+                  if (subIndex >= fromB && subIndex < toB) {
+                    const isHighlighted = countTempo === subIndex;
+                    return (
+                      <div
+                        key={`${index}-${subIndex}`}
+                        className={`notes ${
+                          isHighlighted ? "highlighted" : ""
+                        }`}
+                      >
+                        {renderNotesMainSequence(subIndex)}
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            );
+          }
+        })}{" "}
+        {
+          <div className="synth-options">
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickMainInstrument(piano)}
+              value={piano}
+            >
+              {"piano"}
+            </Button>
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickMainInstrument(amSynth)}
+              value={amSynth}
+            >
+              {"AM Synth"}
+            </Button>
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickMainInstrument(fmSynth)}
+              value={fmSynth}
+            >
+              {"FM Synth"}
+            </Button>
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickMainInstrument(monoSynth)}
+              value={monoSynth}
+            >
+              {"Mono Synth"}
+            </Button>
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickMainInstrument(basicSynth)}
+              value={basicSynth}
+            >
+              {"Basic Synth"}
+            </Button>
+          </div>
+        }
       </div>
-    </>
+
+      <div className="back-sequence">
+        {backgroundSequence.map((note, index) => {
+          if (getNext8ndIndex(index)) {
+            return (
+              <div className="back-compass" key={index}>
+                {renderNotesBackSequence(index)}
+              </div>
+            );
+          }
+          return null;
+        })}
+        {
+          <div className="synth-options">
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickBackInstrument(piano)}
+              value={piano}
+            >
+              {"piano"}
+            </Button>
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickBackInstrument(amSynth)}
+              value={amSynth}
+            >
+              {"AM Synth"}
+            </Button>
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickBackInstrument(fmSynth)}
+              value={fmSynth}
+            >
+              {"FM Synth"}
+            </Button>
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickBackInstrument(monoSynth)}
+              value={monoSynth}
+            >
+              {"Mono Synth"}
+            </Button>
+            <Button
+              sx={{
+                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
+              }}
+              variant="contained"
+              size="small"
+              onClick={() => handleClickBackInstrument(basicSynth)}
+              value={basicSynth}
+            >
+              {"Basic Synth"}
+            </Button>
+            <div>
+              <IconButton onClick={handleTogglePlay}>
+                {play ? (
+                  <StopCircleIcon />
+                ) : (
+                  <PlayCircleFilledWhiteIcon onClick={handleTogglePlay} />
+                )}
+              </IconButton>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
   );
 }
