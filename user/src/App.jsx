@@ -6,6 +6,15 @@ import Button from "@mui/material/Button";
 import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import { IconButton } from "@mui/material";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import ViewModuleIcon from "@mui/icons-material/ViewModule";
+import ViewQuiltIcon from "@mui/icons-material/ViewQuilt";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import PianoIcon from "@mui/icons-material/Piano";
+import Box from "@mui/material/Box";
+import RadioIcon from "@mui/icons-material/Radio";
+import StraightenIcon from "@mui/icons-material/Straighten";
 
 // notes = ["C", "D", "E", "F", "G", "A", "B"]
 // octaves = [3, 4, 5]
@@ -13,6 +22,7 @@ import { IconButton } from "@mui/material";
 // C, D, E, F, G, A, B
 // 1. Dó | 2. Ré | 3. Mi | 4. Fa | 5. Sol | 6. Lá | 7. Si  ()
 
+//Effects
 const reverb = new Tone.Reverb({
   decay: 1.5,
   wet: 1,
@@ -25,7 +35,9 @@ const tremolo = new Tone.Tremolo({
   .toDestination()
   .start();
 
+//Instruments
 const piano = new Tone.Sampler({
+  volume: -10,
   urls: {
     A0: "A0.mp3",
     C1: "C1.mp3",
@@ -63,30 +75,25 @@ const piano = new Tone.Sampler({
   .chain(tremolo, reverb)
   .toDestination();
 
-const amSynth = new Tone.AMSynth().connect(tremolo).toDestination();
-const fmSynth = new Tone.FMSynth().connect(tremolo).toDestination();
+const amSynth = new Tone.AMSynth({
+  volume: -25,
+})
+  .connect(tremolo)
+  .toDestination();
+
 const basicSynth = new Tone.Synth({
-  volume: -10,
-}).toDestination();
-const membraneSynth = new Tone.MembraneSynth().toDestination();
-const pluckySynth = new Tone.PluckSynth().toDestination();
-const monoSynth = new Tone.MonoSynth({
-  oscillator: {
-    type: "square",
-  },
-  envelope: {
-    attack: 0,
-  },
-  volume: -10,
-}).toDestination();
-const sampler = new Tone.Sampler({
-  urls: {
-    A1: "A1.mp3",
-    A2: "A2.mp3",
-  },
-  baseUrl: "https://tonejs.github.io/audio/casio/",
+  volume: -20,
 }).toDestination();
 
+// const sampler = new Tone.Sampler({
+//   urls: {
+//     A1: "A1.mp3",
+//     A2: "A2.mp3",
+//   },
+//   baseUrl: "https://tonejs.github.io/audio/casio/",
+// }).toDestination();
+
+// Notes scale
 const backgroundNotes = [
   "A2",
   "B2",
@@ -100,6 +107,7 @@ const backgroundNotes = [
 
 const mainNotes = ["A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4"].reverse();
 
+// Function to divide main sequence in 8 compass
 const chunkSequence = (sequence, size) => {
   return sequence.reduce((acc, note, index) => {
     const chunkIndex = Math.floor(index / size);
@@ -111,13 +119,15 @@ const chunkSequence = (sequence, size) => {
   }, []);
 };
 
+// Number of compass and notes per compass
 const notesPerCompass = 4;
 const compass = 8;
 
 // todo
-const InstrumentMap = {
+const InstrumentsMap = {
   piano: piano,
   amSynth: amSynth,
+  basicSynth: basicSynth,
 };
 
 export default function App() {
@@ -127,6 +137,7 @@ export default function App() {
   const [play, setPlay] = useState(false);
   const [countTempo, setCountTempo] = useState(null);
   const intervalRef = useRef();
+  const [selectedSynth, setSelectedSynth] = useState("");
   const [backgroundVolume, setBackgroundVolume] = useState(-10);
   const [mainVolume, setMainVolume] = useState(-10);
 
@@ -158,12 +169,23 @@ export default function App() {
     return index % 8 === 0;
   };
 
-  const handleClickBackInstrument = (instrument) => {
-    setBackgroundInstrument(instrument);
+  // Handling synth choice
+  const handleMainInstrumentChoice = (event, synthChoice) => {
+    const instrument = synthChoice;
+    for (const synth in InstrumentsMap) {
+      if (instrument === synth) {
+        setMainInstrument(synth);
+      }
+    }
   };
 
-  const handleClickMainInstrument = (instrument) => {
-    setMainInstrument(instrument);
+  const handleBackInstrumentChoice = (event, synthChoice) => {
+    const instrument = synthChoice;
+    for (const synth in InstrumentsMap) {
+      if (instrument === synth) {
+        setBackgroundInstrument(synth);
+      }
+    }
   };
 
   const startCountTempo = () => {
@@ -193,7 +215,7 @@ export default function App() {
     const bSequence = new Tone.Sequence(
       (time, note) => {
         setPlay(true);
-        backgroundInstrument.triggerAttackRelease(
+        InstrumentsMap[backgroundInstrument].triggerAttackRelease(
           note,
           tempo * notesPerCompass,
           time
@@ -206,7 +228,7 @@ export default function App() {
     const mSequence = new Tone.Sequence(
       (time, note) => {
         setPlay(true);
-        mainInstrument.triggerAttackRelease(note, tempo, time);
+        InstrumentsMap[mainInstrument].triggerAttackRelease(note, tempo, time);
       },
       mainSequence,
       0.5
@@ -240,7 +262,11 @@ export default function App() {
   const handleToggleNoteBackSeq = (note, index, isBackNoteActive) => {
     if (!isBackNoteActive) {
       const now = Tone.now();
-      backgroundInstrument.triggerAttackRelease(note, "8n", now);
+      InstrumentsMap[backgroundInstrument].triggerAttackRelease(
+        note,
+        "8n",
+        now
+      );
     }
     const copyBackgroundSequence = [...backgroundSequence];
     copyBackgroundSequence[index] =
@@ -254,7 +280,7 @@ export default function App() {
   const handleToggleNoteMainSeq = (note, index, isMainNoteActive) => {
     if (!isMainNoteActive) {
       const now = Tone.now();
-      mainInstrument.triggerAttackRelease(note, "8n", now);
+      InstrumentsMap[mainInstrument].triggerAttackRelease(note, "8n", now);
     }
     const copyMainSequence = [...mainSequence];
     copyMainSequence[index] =
@@ -330,61 +356,37 @@ export default function App() {
         })}{" "}
         {
           <div className="synth-options">
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickMainInstrument(piano)}
-              value={piano}
+            <ToggleButtonGroup
+              value={mainInstrument}
+              size="large"
+              orientation="vertical"
+              exclusive
+              onChange={handleMainInstrumentChoice}
+              sx={{ alignItems: "left" }}
             >
-              {"piano"}
-            </Button>
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickMainInstrument(amSynth)}
-              value={amSynth}
-            >
-              {"AM Synth"}
-            </Button>
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickMainInstrument(fmSynth)}
-              value={fmSynth}
-            >
-              {"FM Synth"}
-            </Button>
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickMainInstrument(monoSynth)}
-              value={monoSynth}
-            >
-              {"Mono Synth"}
-            </Button>
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickMainInstrument(basicSynth)}
-              value={basicSynth}
-            >
-              {"Basic Synth"}
-            </Button>
+              <ToggleButton
+                value="piano"
+                aria-label="list"
+                sx={{ maxHeight: "65px" }}
+              >
+                <PianoIcon />
+              </ToggleButton>
+              <ToggleButton
+                value="amSynth"
+                aria-label="module"
+                sx={{ maxHeight: "65px" }}
+              >
+                <RadioIcon />
+              </ToggleButton>
+
+              <ToggleButton
+                value="basicSynth"
+                aria-label="quilt"
+                sx={{ maxHeight: "65px" }}
+              >
+                <StraightenIcon />
+              </ToggleButton>
+            </ToggleButtonGroup>
           </div>
         }
       </div>
@@ -402,69 +404,43 @@ export default function App() {
         })}
         {
           <div className="synth-options">
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickBackInstrument(piano)}
-              value={piano}
-            >
-              {"piano"}
-            </Button>
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickBackInstrument(amSynth)}
-              value={amSynth}
-            >
-              {"AM Synth"}
-            </Button>
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickBackInstrument(fmSynth)}
-              value={fmSynth}
-            >
-              {"FM Synth"}
-            </Button>
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickBackInstrument(monoSynth)}
-              value={monoSynth}
-            >
-              {"Mono Synth"}
-            </Button>
-            <Button
-              sx={{
-                "&:hover": { backgroundColor: "#5E17EB", color: "white" },
-              }}
-              variant="contained"
-              size="small"
-              onClick={() => handleClickBackInstrument(basicSynth)}
-              value={basicSynth}
-            >
-              {"Basic Synth"}
-            </Button>
             <div>
-              <IconButton onClick={handleTogglePlay}>
-                {play ? (
-                  <StopCircleIcon />
-                ) : (
-                  <PlayCircleFilledWhiteIcon onClick={handleTogglePlay} />
-                )}
-              </IconButton>
+              <ToggleButtonGroup
+                value={backgroundInstrument}
+                size="large"
+                orientation="vertical"
+                exclusive
+                onChange={handleBackInstrumentChoice}
+                sx={{ alignItems: "left" }}
+              >
+                <ToggleButton
+                  value="piano"
+                  aria-label="list"
+                  sx={{ maxHeight: "65px" }}
+                >
+                  <PianoIcon />
+                </ToggleButton>
+                <ToggleButton
+                  value="amSynth"
+                  aria-label="module"
+                  sx={{ maxHeight: "65px" }}
+                >
+                  <RadioIcon />
+                </ToggleButton>
+
+                <ToggleButton
+                  value="basicSynth"
+                  aria-label="quilt"
+                  sx={{ maxHeight: "65px" }}
+                >
+                  <StraightenIcon />
+                </ToggleButton>
+              </ToggleButtonGroup>
+              <div>
+                <IconButton onClick={handleTogglePlay}>
+                  {play ? <StopCircleIcon /> : <PlayCircleFilledWhiteIcon />}
+                </IconButton>
+              </div>
             </div>
           </div>
         }
