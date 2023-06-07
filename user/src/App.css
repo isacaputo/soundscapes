@@ -63,14 +63,28 @@
 }
 
 .main-sequence .note {
+	display: flex;
+	justify-content: center;
+	align-items: center;
   cursor: pointer;
   width: 30px;
-  height: 28px;
+  height: 30px;
   background-color: #f5f4f4;
   box-shadow: 0px 0px 0px 1px #ccc;
   border-bottom: none;
-  display: block;
   border-radius: 1px;
+}
+
+.main-sequence .note:hover .text {
+	display: block
+}
+
+.main-sequence .note .text {
+	display: none;
+	text-align: center;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 10px;
+
 }
 
 .main-sequence .notes.highlighted::before {
@@ -79,6 +93,8 @@
 
 .main-sequence .note.active {
   background-color: #5e17eb;
+	color: white;
+
 }
 
 .main-sequence .compass {
@@ -109,16 +125,32 @@
 }
 
 .back-sequence .note {
-  width: 308px;
-  height: 38px;
+	display: flex;
+		justify-content: center;
+		align-items: center;
+	cursor: pointer;
+  width: 144px;
+  height: 30px;
   background-color: #cccc;
-  display: block;
   border-radius: 5px;
 }
 
+.back-sequence .note .text {
+	display:none;
+	text-align: center;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 10px;
+}
+
+.back-sequence .note:hover .text {
+	display: block
+}
+
+
+
 .back-sequence .note.active {
-  width: 308px;
-  height: 38px;
+  width: 144px;
+  height: 30px;
   background-color: #a3e6fa;
   display: block;
 }
@@ -157,7 +189,6 @@
 .main-sequence-container {
   display: flex;
   gap: 30px;
-  margin-left: 70px;
 }
 
 .back-sequence-container {
@@ -199,4 +230,23 @@
   text-align: center;
   display: flex;
   flex-direction: column;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 22px;
+}
+
+.reset-icon {
+  transform: scale(1.8);
+  align-items: center;
+  color: #5e17eb;
+}
+
+.reset-container {
+  margin-top: 20px;
+}
+
+.sliders-container {
+  margin-top: 10px;
 }
