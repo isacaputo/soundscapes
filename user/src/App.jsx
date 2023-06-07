@@ -17,6 +17,7 @@ import Slider from "@mui/material/Slider";
 import VolumeDown from "@mui/icons-material/VolumeDown";
 import VolumeUp from "@mui/icons-material/VolumeUp";
 import WavesIcon from "@mui/icons-material/Waves";
+import SpatialAudioIcon from "@mui/icons-material/SpatialAudio";
 
 // notes = ["C", "D", "E", "F", "G", "A", "B"]
 // octaves = [3, 4, 5]
@@ -31,12 +32,6 @@ import WavesIcon from "@mui/icons-material/Waves";
 //   },
 //   baseUrl: "https://tonejs.github.io/audio/casio/",
 // }).toDestination();
-
-//Effects
-const reverb = new Tone.Reverb({
-  decay: 1.5,
-  wet: 1,
-}).toDestination();
 
 //Main Sequence Buffers
 const buffer1 = new Tone.Buffer(
@@ -306,6 +301,7 @@ export default function App() {
   const [countTempo, setCountTempo] = useState(null);
   const intervalRef = useRef();
   const [tremoloFrequency, setTremoloFrequency] = useState(0);
+  const [reverbDecay, setReverbDecay] = useState(1);
   const [backgroundVolume, setBackgroundVolume] = useState(-10);
   const [mainVolume, setMainVolume] = useState(-10);
   const [backgroundSequence, setBackgroundSequence] = useState(
@@ -318,7 +314,7 @@ export default function App() {
   //Effects
   const tremolo = useMemo(() => {
     const tremoloEffect = new Tone.Tremolo({
-      frequency: tremoloFrequency, // step="0.5" min="1" max="15
+      frequency: tremoloFrequency, // step="2" min="0" max="15
       depth: 0.8,
     })
       .toDestination()
@@ -327,11 +323,19 @@ export default function App() {
     return tremoloEffect;
   }, [tremoloFrequency]);
 
+  const reverb = useMemo(() => {
+    const reverbEffect = new Tone.Reverb({
+      decay: reverbDecay, // step="1" min="0" max="10"
+      wet: 1,
+    }).toDestination();
+    return reverbEffect;
+  }, [reverbDecay]);
+
   const mainSynths = useMemo(() => {
     const mainAmSynth = new Tone.AMSynth({
       volume: mainVolume,
     })
-      .connect(tremolo)
+      .connect(reverb)
       .toDestination();
 
     const mainPiano = new Tone.Sampler({
@@ -369,13 +373,13 @@ export default function App() {
         C8: buffer30,
       },
     })
-      .connect(tremolo)
+      .connect(reverb)
       .toDestination();
 
     const mainBasicSynth = new Tone.Synth({
       volume: mainVolume,
     })
-      .connect(tremolo)
+      .connect(reverb)
       .toDestination();
 
     return {
@@ -383,7 +387,7 @@ export default function App() {
       amSynth: mainAmSynth,
       basicSynth: mainBasicSynth,
     };
-  }, [mainVolume, tremolo]);
+  }, [mainVolume, reverb]);
 
   const backgroundSynths = useMemo(() => {
     const backAmSynth = new Tone.AMSynth({
@@ -614,8 +618,11 @@ export default function App() {
   };
 
   const handleTremoloFrequencyChange = (event, newValue) => {
-    console.log(newValue);
     setTremoloFrequency(newValue);
+  };
+
+  const handleReverbDecayChange = (event, newValue) => {
+    setReverbDecay(newValue);
   };
 
   return (
@@ -661,11 +668,11 @@ export default function App() {
               <ToggleButtonGroup
                 defaultValue="piano"
                 value={mainInstrument}
-                size="large"
+                size="medium"
                 orientation="vertical"
                 exclusive
                 onChange={handleMainInstrumentChoice}
-                sx={{ width: "90px" }}
+                sx={{ width: "80px" }}
               >
                 <ToggleButton value="piano" aria-label="list">
                   <PianoIcon sx={{ color: "#5e17eb" }} />
@@ -680,7 +687,7 @@ export default function App() {
               </ToggleButtonGroup>
               <Box sx={{ width: "120px" }}>
                 <Stack
-                  spacing={1}
+                  spacing={1.2}
                   direction="row"
                   sx={{ mb: 1 }}
                   alignItems="center"
@@ -725,11 +732,11 @@ export default function App() {
               <ToggleButtonGroup
                 defaultValue="piano"
                 value={backgroundInstrument}
-                size="large"
+                size="medium"
                 orientation="vertical"
                 exclusive
                 onChange={handleBackInstrumentChoice}
-                sx={{ width: "90px" }}
+                sx={{ width: "80px" }}
               >
                 <ToggleButton
                   value="piano"
@@ -756,7 +763,7 @@ export default function App() {
               </ToggleButtonGroup>
               <Box sx={{ width: "120px" }}>
                 <Stack
-                  spacing={1}
+                  spacing={1.2}
                   direction="row"
                   sx={{ mb: 1, mt: 1 }}
                   alignItems="center"
@@ -764,7 +771,7 @@ export default function App() {
                   <VolumeDown />
                   <Slider
                     aria-label="backVolume"
-                    min={-30}
+                    min={-50}
                     max={10}
                     value={backgroundVolume}
                     onChange={handleBackVolumeChange}
@@ -774,7 +781,7 @@ export default function App() {
               </Box>
               <Box sx={{ width: "120px" }}>
                 <Stack
-                  spacing={1}
+                  spacing={1.2}
                   direction="row"
                   sx={{ mb: 1, mt: 1 }}
                   alignItems="center"
@@ -787,9 +794,29 @@ export default function App() {
                     step={2}
                     marks
                     min={0}
-                    max={15}
+                    max={20}
                   />
                   <WavesIcon />
+                </Stack>
+              </Box>
+              <Box sx={{ width: "120px" }}>
+                <Stack
+                  spacing={1.2}
+                  direction="row"
+                  sx={{ mb: 1, mt: 1 }}
+                  alignItems="center"
+                >
+                  <SpatialAudioIcon sx={{ transform: "scale(0.8)" }} />
+                  <Slider
+                    aria-label="reverb"
+                    value={reverbDecay}
+                    onChange={handleReverbDecayChange}
+                    step={2}
+                    marks
+                    min={1}
+                    max={15}
+                  />
+                  <SpatialAudioIcon />
                 </Stack>
               </Box>
 
