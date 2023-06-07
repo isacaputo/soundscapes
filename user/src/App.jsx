@@ -1,29 +1,35 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react';
-import * as Tone from 'tone';
-import './App.css';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-import StopCircleIcon from '@mui/icons-material/StopCircle';
-import { IconButton } from '@mui/material';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import PianoIcon from '@mui/icons-material/Piano';
-import Box from '@mui/material/Box';
-import RadioIcon from '@mui/icons-material/Radio';
-import StraightenIcon from '@mui/icons-material/Straighten';
-import Stack from '@mui/material/Stack';
-import Slider from '@mui/material/Slider';
-import VolumeDown from '@mui/icons-material/VolumeDown';
-import VolumeUp from '@mui/icons-material/VolumeUp';
-import WavesIcon from '@mui/icons-material/Waves';
-import SpatialAudioIcon from '@mui/icons-material/SpatialAudio';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import TimerIcon from '@mui/icons-material/Timer';
-import { sequenceExample1, sequenceExample2 } from './helper';
+import React, {
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+} from "react";
+import * as Tone from "tone";
+import "./App.css";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import StopCircleIcon from "@mui/icons-material/StopCircle";
+import { IconButton, inputClasses } from "@mui/material";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import PianoIcon from "@mui/icons-material/Piano";
+import Box from "@mui/material/Box";
+import RadioIcon from "@mui/icons-material/Radio";
+import StraightenIcon from "@mui/icons-material/Straighten";
+import Stack from "@mui/material/Stack";
+import Slider from "@mui/material/Slider";
+import VolumeDown from "@mui/icons-material/VolumeDown";
+import VolumeUp from "@mui/icons-material/VolumeUp";
+import WavesIcon from "@mui/icons-material/Waves";
+import SpatialAudioIcon from "@mui/icons-material/SpatialAudio";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import TimerIcon from "@mui/icons-material/Timer";
+import { sequenceExample1, sequenceExample2 } from "./helper";
 
 // notes = ["C", "D", "E", "F", "G", "A", "B"]
 // octaves = [3, 4, 5]
@@ -47,186 +53,186 @@ import { sequenceExample1, sequenceExample2 } from './helper';
 
 //Main Sequence Buffers
 const buffer1 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A0.mp3',
+  "https://tonejs.github.io/audio/salamander/A0.mp3",
 );
 const buffer2 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C1.mp3',
+  "https://tonejs.github.io/audio/salamander/C1.mp3",
 );
 const buffer3 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds1.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds1.mp3",
 );
 const buffer4 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs1.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs1.mp3",
 );
 const buffer5 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A1.mp3',
+  "https://tonejs.github.io/audio/salamander/A1.mp3",
 );
 const buffer6 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C2.mp3',
+  "https://tonejs.github.io/audio/salamander/C2.mp3",
 );
 const buffer7 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds2.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds2.mp3",
 );
 const buffer8 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs2.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs2.mp3",
 );
 const buffer9 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A2.mp3',
+  "https://tonejs.github.io/audio/salamander/A2.mp3",
 );
 const buffer10 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C3.mp3',
+  "https://tonejs.github.io/audio/salamander/C3.mp3",
 );
 const buffer11 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds3.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds3.mp3",
 );
 const buffer12 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs3.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs3.mp3",
 );
 const buffer13 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A3.mp3',
+  "https://tonejs.github.io/audio/salamander/A3.mp3",
 );
 const buffer14 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C4.mp3',
+  "https://tonejs.github.io/audio/salamander/C4.mp3",
 );
 const buffer15 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds4.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds4.mp3",
 );
 const buffer16 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs4.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs4.mp3",
 );
 const buffer17 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A4.mp3',
+  "https://tonejs.github.io/audio/salamander/A4.mp3",
 );
 const buffer18 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C5.mp3',
+  "https://tonejs.github.io/audio/salamander/C5.mp3",
 );
 const buffer19 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds5.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds5.mp3",
 );
 const buffer20 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs5.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs5.mp3",
 );
 const buffer21 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A5.mp3',
+  "https://tonejs.github.io/audio/salamander/A5.mp3",
 );
 const buffer22 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C6.mp3',
+  "https://tonejs.github.io/audio/salamander/C6.mp3",
 );
 const buffer23 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds6.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds6.mp3",
 );
 const buffer24 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs6.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs6.mp3",
 );
 const buffer25 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A6.mp3',
+  "https://tonejs.github.io/audio/salamander/A6.mp3",
 );
 const buffer26 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C7.mp3',
+  "https://tonejs.github.io/audio/salamander/C7.mp3",
 );
 const buffer27 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds7.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds7.mp3",
 );
 const buffer28 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs7.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs7.mp3",
 );
 const buffer29 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A7.mp3',
+  "https://tonejs.github.io/audio/salamander/A7.mp3",
 );
 const buffer30 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C8.mp3',
+  "https://tonejs.github.io/audio/salamander/C8.mp3",
 );
 
 //Background Sequence Buffers
 const buffer31 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A0.mp3',
+  "https://tonejs.github.io/audio/salamander/A0.mp3",
 );
 const buffer32 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C1.mp3',
+  "https://tonejs.github.io/audio/salamander/C1.mp3",
 );
 const buffer33 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds1.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds1.mp3",
 );
 const buffer34 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs1.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs1.mp3",
 );
 const buffer35 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A1.mp3',
+  "https://tonejs.github.io/audio/salamander/A1.mp3",
 );
 const buffer36 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C2.mp3',
+  "https://tonejs.github.io/audio/salamander/C2.mp3",
 );
 const buffer37 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds2.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds2.mp3",
 );
 const buffer38 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs2.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs2.mp3",
 );
 const buffer39 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A2.mp3',
+  "https://tonejs.github.io/audio/salamander/A2.mp3",
 );
 const buffer40 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C3.mp3',
+  "https://tonejs.github.io/audio/salamander/C3.mp3",
 );
 const buffer41 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds3.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds3.mp3",
 );
 const buffer42 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs3.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs3.mp3",
 );
 const buffer43 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A3.mp3',
+  "https://tonejs.github.io/audio/salamander/A3.mp3",
 );
 const buffer44 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C4.mp3',
+  "https://tonejs.github.io/audio/salamander/C4.mp3",
 );
 const buffer45 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds4.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds4.mp3",
 );
 const buffer46 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs4.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs4.mp3",
 );
 const buffer47 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A4.mp3',
+  "https://tonejs.github.io/audio/salamander/A4.mp3",
 );
 const buffer48 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C5.mp3',
+  "https://tonejs.github.io/audio/salamander/C5.mp3",
 );
 const buffer49 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds5.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds5.mp3",
 );
 const buffer50 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs5.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs5.mp3",
 );
 const buffer51 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A5.mp3',
+  "https://tonejs.github.io/audio/salamander/A5.mp3",
 );
 const buffer52 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C6.mp3',
+  "https://tonejs.github.io/audio/salamander/C6.mp3",
 );
 const buffer53 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds6.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds6.mp3",
 );
 const buffer54 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs6.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs6.mp3",
 );
 const buffer55 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A6.mp3',
+  "https://tonejs.github.io/audio/salamander/A6.mp3",
 );
 const buffer56 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C7.mp3',
+  "https://tonejs.github.io/audio/salamander/C7.mp3",
 );
 const buffer57 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Ds7.mp3',
+  "https://tonejs.github.io/audio/salamander/Ds7.mp3",
 );
 const buffer58 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/Fs7.mp3',
+  "https://tonejs.github.io/audio/salamander/Fs7.mp3",
 );
 const buffer59 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/A7.mp3',
+  "https://tonejs.github.io/audio/salamander/A7.mp3",
 );
 const buffer60 = new Tone.Buffer(
-  'https://tonejs.github.io/audio/salamander/C8.mp3',
+  "https://tonejs.github.io/audio/salamander/C8.mp3",
 );
 
 //Instruments
@@ -277,17 +283,17 @@ const buffer60 = new Tone.Buffer(
 
 // Notes scale
 const backgroundNotes = [
-  'A2',
-  'B2',
-  'C2',
-  'D2',
-  'E2',
-  'F2',
-  'G2',
-  'A3',
+  "A2",
+  "B2",
+  "C2",
+  "D2",
+  "E2",
+  "F2",
+  "G2",
+  "A3",
 ].reverse();
 
-const mainNotes = ['A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4'].reverse();
+const mainNotes = ["A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4"].reverse();
 
 // Function to divide main sequence in 8 compass
 const chunkSequence = (sequence, size) => {
@@ -310,8 +316,8 @@ const compass = 8;
 // 0.5 = 120 bpm
 
 export default function App() {
-  const [backgroundInstrument, setBackgroundInstrument] = useState('piano');
-  const [mainInstrument, setMainInstrument] = useState('piano');
+  const [backgroundInstrument, setBackgroundInstrument] = useState("piano");
+  const [mainInstrument, setMainInstrument] = useState("piano");
   const [tempo, setTempo] = useState(0.5);
   const [play, setPlay] = useState(false);
   const [countTempo, setCountTempo] = useState(null);
@@ -331,6 +337,8 @@ export default function App() {
   const [mainVolumeCommitted, setMainVolumeCommitted] = useState(-10);
 
   const [numberOfBeats, setNumberOfBeats] = useState(120);
+  const [numberOfBeatsCommitted, setNumberOfBeatsCommitted] = useState(120);
+
   const [backgroundSequence, setBackgroundSequence] = useState(
     sequenceExample1.backSequence,
   );
@@ -368,32 +376,32 @@ export default function App() {
       urls: {
         A0: buffer1,
         C1: buffer2,
-        'D#1': buffer3,
-        'F#1': buffer4,
+        "D#1": buffer3,
+        "F#1": buffer4,
         A1: buffer5,
         C2: buffer6,
-        'D#2': buffer7,
-        'F#2': buffer8,
+        "D#2": buffer7,
+        "F#2": buffer8,
         A2: buffer9,
         C3: buffer10,
-        'D#3': buffer11,
-        'F#3': buffer12,
+        "D#3": buffer11,
+        "F#3": buffer12,
         A3: buffer13,
         C4: buffer14,
-        'D#4': buffer15,
-        'F#4': buffer16,
+        "D#4": buffer15,
+        "F#4": buffer16,
         A4: buffer17,
         C5: buffer18,
-        'D#5': buffer19,
-        'F#5': buffer20,
+        "D#5": buffer19,
+        "F#5": buffer20,
         A5: buffer21,
         C6: buffer22,
-        'D#6': buffer23,
-        'F#6': buffer24,
+        "D#6": buffer23,
+        "F#6": buffer24,
         A6: buffer25,
         C7: buffer26,
-        'D#7': buffer27,
-        'F#7': buffer28,
+        "D#7": buffer27,
+        "F#7": buffer28,
         A7: buffer29,
         C8: buffer30,
       },
@@ -427,32 +435,32 @@ export default function App() {
       urls: {
         A0: buffer31,
         C1: buffer32,
-        'D#1': buffer33,
-        'F#1': buffer34,
+        "D#1": buffer33,
+        "F#1": buffer34,
         A1: buffer35,
         C2: buffer36,
-        'D#2': buffer37,
-        'F#2': buffer38,
+        "D#2": buffer37,
+        "F#2": buffer38,
         A2: buffer39,
         C3: buffer40,
-        'D#3': buffer41,
-        'F#3': buffer42,
+        "D#3": buffer41,
+        "F#3": buffer42,
         A3: buffer43,
         C4: buffer44,
-        'D#4': buffer45,
-        'F#4': buffer46,
+        "D#4": buffer45,
+        "F#4": buffer46,
         A4: buffer47,
         C5: buffer48,
-        'D#5': buffer49,
-        'F#5': buffer50,
+        "D#5": buffer49,
+        "F#5": buffer50,
         A5: buffer51,
         C6: buffer52,
-        'D#6': buffer53,
-        'F#6': buffer54,
+        "D#6": buffer53,
+        "F#6": buffer54,
         A6: buffer55,
         C7: buffer56,
-        'D#7': buffer57,
-        'F#7': buffer58,
+        "D#7": buffer57,
+        "F#7": buffer58,
         A7: buffer59,
         C8: buffer60,
       },
@@ -474,8 +482,8 @@ export default function App() {
   }, [backgroundVolumeCommitted, tremolo, reverb]);
 
   useEffect(() => {
-    Tone.Transport.bpm.value = numberOfBeats;
-  }, [numberOfBeats]);
+    Tone.Transport.bpm.value = numberOfBeatsCommitted;
+  }, [numberOfBeatsCommitted]);
 
   const getNext4ndIndex = (index) => {
     return index % 4 === 0;
@@ -494,15 +502,23 @@ export default function App() {
     setBackgroundInstrument(synthChoice);
   };
 
+  const updateCountTempo = useCallback(
+    (tempoForced) => {
+      setCountTempo((previous) => {
+        if (tempoForced) {
+          return tempoForced === mainSequence.length - 1 ? 0 : tempoForced + 1;
+        }
+        return previous === mainSequence.length - 1 ? 0 : previous + 1;
+      });
+    },
+    [mainSequence],
+  );
+
   // Visual representation of time
   const startCountTempo = () => {
     setCountTempo(0);
     clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setCountTempo((previous) =>
-        previous === mainSequence.length - 1 ? 0 : previous + 1,
-      );
-    }, tempo * 1000);
+    intervalRef.current = setInterval(updateCountTempo, tempo * 1000);
   };
 
   const stopCountTempo = () => {
@@ -574,7 +590,7 @@ export default function App() {
       const now = Tone.now();
       backgroundSynths[backgroundInstrument].triggerAttackRelease(
         note,
-        '8n',
+        "8n",
         now,
       );
     }
@@ -589,7 +605,7 @@ export default function App() {
   const handleToggleNoteMainSeq = (note, index, isMainNoteActive) => {
     if (!isMainNoteActive && !play) {
       const now = Tone.now();
-      mainSynths[mainInstrument].triggerAttackRelease(note, '8n', now);
+      mainSynths[mainInstrument].triggerAttackRelease(note, "8n", now);
     }
     const copyMainSequence = [...mainSequence];
     copyMainSequence[index] =
@@ -606,9 +622,13 @@ export default function App() {
           onClick={() =>
             handleToggleNoteBackSeq(note, indexCompass, isBackNoteActive)
           }
-          className={`note ${isBackNoteActive && 'active'}`}
+          className={`note ${isBackNoteActive && "active"}`}
         >
-          {<div className={'text'}>{note}</div>}
+          {
+            <div className={"text"}>
+              <strong>{note}</strong>
+            </div>
+          }
         </div>
       );
     });
@@ -619,13 +639,17 @@ export default function App() {
 
       return (
         <div
-          className={`note ${isMainNoteActive ? 'active' : ''}`}
+          className={`note ${isMainNoteActive ? "active" : ""}`}
           key={`${indexCompass}-${indexNote}`}
           onClick={() =>
             handleToggleNoteMainSeq(note, indexCompass, isMainNoteActive)
           }
         >
-          {<div className="text">{note}</div>}
+          {
+            <div className="text">
+              <strong>{note}</strong>
+            </div>
+          }
         </div>
       );
     });
@@ -649,58 +673,67 @@ export default function App() {
   };
 
   const handlePreSelectedSequence = (event, newValue) => {
-    if (newValue === 'sequenceExample1') {
+    if (newValue === "sequenceExample1") {
       setMainSequence(sequenceExample1.mainSequence);
       setBackgroundSequence(sequenceExample1.backSequence);
     }
-    if (newValue === 'sequenceExample2') {
+    if (newValue === "sequenceExample2") {
       setMainSequence(sequenceExample2.mainSequence);
       setBackgroundSequence(sequenceExample2.backSequence);
     }
   };
 
-  const handleResetSequences = (event) => {
+  const handleResetSequences = () => {
     setMainSequence(
       Array.from({ length: compass * notesPerCompass }).fill(null),
     );
     setBackgroundSequence(Array.from({ length: compass * 4 }).fill(null));
   };
 
-  const handleBpmChange = (event, newValue) => {
-    clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setCountTempo((previous) =>
-        previous === mainSequence.length - 1 ? 0 : previous + 1,
-      );
-    }, (60 / newValue) * 1000);
+  const handleBpmChange = (event, newValue = 0) => {
+    const inSeconds = 60 / newValue;
+    console.log("bpm change", inSeconds);
     setNumberOfBeats(newValue);
+  };
+
+  const handleChangeBpmCommited = (event, newValue = 0) => {
+    const inSeconds = 60 / newValue;
+
+    clearInterval(intervalRef.current);
+    updateCountTempo(countTempo);
+    intervalRef.current = setInterval(updateCountTempo, inSeconds * 1000);
+
+    setNumberOfBeatsCommitted(newValue);
+    setTempo(inSeconds);
   };
 
   return (
     <div className="board">
       <img src={`/images/soundscapes-logo.png`} className="logo-image" />
-      <FormControl>
-        <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-        <RadioGroup
-          size="small"
-          row
-          aria-labelledby="demo-row-radio-buttons-group-label"
-          name="row-radio-buttons-group"
-          onChange={handlePreSelectedSequence}
-          defaultValue={'sequenceExample1'}
-        >
-          <FormControlLabel
-            value="sequenceExample1"
-            control={<Radio />}
-            label="Sequence 01"
-          />
-          <FormControlLabel
-            value="sequenceExample2"
-            control={<Radio />}
-            label="Sequence 02"
-          />
-        </RadioGroup>
-      </FormControl>
+      <div className="select-established-sequence">
+        <FormControl>
+          <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
+          <RadioGroup
+            size="small"
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="row-radio-buttons-group"
+            onChange={handlePreSelectedSequence}
+            defaultValue={"sequenceExample1"}
+          >
+            <FormControlLabel
+              value="sequenceExample1"
+              control={<Radio />}
+              label="Sequence 01"
+            />
+            <FormControlLabel
+              value="sequenceExample2"
+              control={<Radio />}
+              label="Sequence 02"
+            />
+          </RadioGroup>
+        </FormControl>
+      </div>
       <div className="main-sequence-container">
         <div className="synth-options">
           <ToggleButtonGroup
@@ -710,19 +743,38 @@ export default function App() {
             orientation="vertical"
             exclusive
             onChange={handleMainInstrumentChoice}
-            sx={{ width: '70px' }}
+            sx={{ width: "60px" }}
           >
             <ToggleButton value="piano" aria-label="list">
-              <PianoIcon sx={{ color: '#5e17eb' }} />
+              <PianoIcon sx={{ color: "#5e17eb" }} />
             </ToggleButton>
             <ToggleButton value="amSynth" aria-label="module">
-              <RadioIcon sx={{ color: '#5e17eb' }} />
+              <RadioIcon sx={{ color: "#5e17eb" }} />
             </ToggleButton>
 
             <ToggleButton value="basicSynth" aria-label="quilt">
-              <StraightenIcon sx={{ color: '#5e17eb' }} />
+              <StraightenIcon sx={{ color: "#5e17eb" }} />
             </ToggleButton>
           </ToggleButtonGroup>
+          <Stack
+            spacing={1.5}
+            direction="column"
+            sx={{ mb: 1, mt: 2 }}
+            alignItems="center"
+          >
+            <VolumeUp />
+            <Slider
+              aria-label="mainVolume"
+              min={-25}
+              max={0}
+              sx={{ width: "5px", height: "80px" }}
+              orientation="vertical"
+              value={mainVolume}
+              onChange={handleMainVolumeChange}
+              onChangeCommitted={(e, value) => setMainVolumeCommitted(value)}
+            />
+            <VolumeDown />
+          </Stack>
         </div>
         <div className="main-sequence">
           {mainSequence.map((_, index) => {
@@ -740,7 +792,7 @@ export default function App() {
                         <div
                           key={`${index}-${subIndex}`}
                           className={`notes ${
-                            isHighlighted ? 'highlighted' : ''
+                            isHighlighted ? "highlighted" : ""
                           }`}
                         >
                           {renderNotesMainSequence(subIndex)}
@@ -754,26 +806,53 @@ export default function App() {
             }
           })}
         </div>
-        <div className="main-sequence-sliders">
-          <Box sx={{ width: '120px' }}>
+        <div className="main-sequence-slider">
+          <Box>
+            <Stack
+              spacing={1.7}
+              direction="column"
+              sx={{ mb: 2, mt: 2, ml: 2 }}
+              alignItems="center"
+            >
+              <WavesIcon />
+              <Slider
+                sx={{ width: "5px", height: "120px" }}
+                orientation="vertical"
+                aria-label="tremolo"
+                value={tremoloFrequency}
+                onChange={handleTremoloFrequencyChange}
+                onChangeCommitted={(e, value) =>
+                  setTremoloFrequencyCommitted(value)
+                }
+                step={2}
+                marks
+                min={0}
+                max={60}
+              />
+              <WavesIcon sx={{ transform: "scale(0.8)" }} />
+            </Stack>
+          </Box>
+          {/* <Box sx={{ width: '120px' }}>
             <Stack
               spacing={1.2}
               direction="row"
               sx={{ mb: 1, mt: 2 }}
               alignItems="center"
             >
-              <VolumeDown />
+              <TimerIcon sx={{ transform: 'scale(0.8)' }} />
               <Slider
-                aria-label="mainVolume"
-                min={-40}
-                max={0}
-                value={mainVolume}
-                onChange={handleMainVolumeChange}
-                onChangeCommitted={(e, value) => setMainVolumeCommitted(value)}
+                aria-label="bpm"
+                value={numberOfBeats}
+                onChange={handleBpmChange}
+                onChangeCommitted={handleChangeBpmCommited}
+                step={10}
+                marks
+                min={40}
+                max={240}
               />
-              <VolumeUp />
+              <TimerIcon />
             </Stack>
-          </Box>
+          </Box> */}
         </div>
       </div>
       <div className="back-sequence-container">
@@ -785,32 +864,56 @@ export default function App() {
             orientation="vertical"
             exclusive
             onChange={handleBackInstrumentChoice}
-            sx={{ width: '70px' }}
+            sx={{ width: "60px" }}
           >
             <ToggleButton
               value="piano"
               aria-label="list"
-              sx={{ maxHeight: '65px' }}
+              sx={{ maxHeight: "65px" }}
             >
-              <PianoIcon sx={{ color: '#22C2F1' }} />
+              <PianoIcon sx={{ color: "#22C2F1" }} />
             </ToggleButton>
             <ToggleButton
               value="amSynth"
               aria-label="module"
-              sx={{ maxHeight: '65px' }}
+              sx={{ maxHeight: "65px" }}
             >
-              <RadioIcon sx={{ color: '#22C2F1' }} />
+              <RadioIcon sx={{ color: "#22C2F1" }} />
             </ToggleButton>
 
             <ToggleButton
               value="basicSynth"
               aria-label="quilt"
-              sx={{ maxHeight: '65px' }}
+              sx={{ maxHeight: "65px" }}
             >
-              <StraightenIcon sx={{ color: '#22C2F1' }} />
+              <StraightenIcon sx={{ color: "#22C2F1" }} />
             </ToggleButton>
           </ToggleButtonGroup>
+          <Box sx={{ height: "60px" }}>
+            <Stack
+              spacing={1.5}
+              direction="column"
+              sx={{ mb: 1, mt: 2 }}
+              alignItems="center"
+            >
+              <VolumeUp />
+              <Slider
+                sx={{ width: "5px", height: "80px" }}
+                orientation="vertical"
+                aria-label="backVolume"
+                min={-25}
+                max={5}
+                value={backgroundVolume}
+                onChange={handleBackVolumeChange}
+                onChangeCommitted={(e, value) =>
+                  setBackgroundVolumeCommitted(value)
+                }
+              />
+              <VolumeDown />
+            </Stack>
+          </Box>
         </div>
+
         <div className="back-sequence">
           {backgroundSequence.map((note, index) => {
             if (getNext4ndIndex(index)) {
@@ -823,116 +926,52 @@ export default function App() {
             return null;
           })}
         </div>
-        <div className="back-sequence-sliders">
-          <Box sx={{ width: '120px' }}>
-            <Stack
-              spacing={1.2}
-              direction="row"
-              sx={{ mb: 1, mt: 1 }}
-              alignItems="center"
-            >
-              <VolumeDown />
-              <Slider
-                aria-label="backVolume"
-                min={-40}
-                max={5}
-                value={backgroundVolume}
-                onChange={handleBackVolumeChange}
-                onChangeCommitted={(e, value) =>
-                  setBackgroundVolumeCommitted(value)
-                }
-              />
-              <VolumeUp />
-            </Stack>
-          </Box>
-          <Box sx={{ width: '120px' }}>
-            <Stack
-              spacing={1.2}
-              direction="row"
-              sx={{ mb: 1, mt: 2 }}
-              alignItems="center"
-            >
-              <WavesIcon sx={{ transform: 'scale(0.8)' }} />
-              <Slider
-                aria-label="tremolo"
-                value={tremoloFrequency}
-                onChange={handleTremoloFrequencyChange}
-                onChangeCommitted={(e, value) =>
-                  setTremoloFrequencyCommitted(value)
-                }
-                step={2}
-                marks
-                min={0}
-                max={30}
-              />
-              <WavesIcon />
-            </Stack>
-          </Box>
-          <Box sx={{ width: '120px' }}>
-            <Stack
-              spacing={1.2}
-              direction="row"
-              sx={{ mb: 1, mt: 2 }}
-              alignItems="center"
-            >
-              <SpatialAudioIcon sx={{ transform: 'scale(0.8)' }} />
-              <Slider
-                aria-label="reverb"
-                value={reverbDecay}
-                onChange={handleReverbDecayChange}
-                onChangeCommitted={(e, value) => setReverbDecayCommitted(value)}
-                step={2}
-                marks
-                min={1}
-                max={15}
-              />
-              <SpatialAudioIcon />
-            </Stack>
-          </Box>
-          <Box sx={{ width: '120px' }}>
-            <Stack
-              spacing={1.2}
-              direction="row"
-              sx={{ mb: 1, mt: 2 }}
-              alignItems="center"
-            >
-              <TimerIcon sx={{ transform: 'scale(0.8)' }} />
-              <Slider
-                aria-label="bpm"
-                value={numberOfBeats}
-                onChange={handleBpmChange}
-                step={10}
-                marks
-                min={40}
-                max={240}
-              />
-              <TimerIcon />
-            </Stack>
-          </Box>
+        <Box>
+          <Stack
+            spacing={1.7}
+            direction="column"
+            sx={{ mb: 1, mt: 2, ml: 2 }}
+            alignItems="center"
+          >
+            <SpatialAudioIcon />
+            <Slider
+              sx={{ width: "5px", height: "120px" }}
+              orientation="vertical"
+              aria-label="reverb"
+              value={reverbDecay}
+              onChange={handleReverbDecayChange}
+              onChangeCommitted={(e, value) => setReverbDecayCommitted(value)}
+              step={2}
+              marks
+              min={1}
+              max={15}
+            />
+            <SpatialAudioIcon sx={{ transform: "scale(0.8)" }} />
+          </Stack>
+        </Box>
+      </div>
+      <div className="buttons-container">
+        <div className="play-stop-container">
+          <IconButton
+            size="medium"
+            onClick={handleTogglePlay}
+            className="play-stop-icon"
+          >
+            {play ? (
+              <StopCircleIcon />
+            ) : (
+              <PlayCircleIcon sx={{ color: "#5e17eb" }} />
+            )}
+          </IconButton>
         </div>
-        <div className="buttons-container">
-          <div className="play-stop-container">
-            <IconButton
-              size="large"
-              onClick={handleTogglePlay}
-              className="play-stop-icon"
-            >
-              {play ? (
-                <StopCircleIcon />
-              ) : (
-                <PlayCircleIcon sx={{ color: '#5e17eb' }} />
-              )}
-            </IconButton>
-          </div>
-          <div className="reset-container">
-            <IconButton
-              size="large"
-              onClick={handleResetSequences}
-              className="reset-icon"
-            >
-              <RestartAltIcon />
-            </IconButton>
-          </div>
+        <div className="reset-container">
+          <IconButton
+            size="medium"
+            onClick={handleResetSequences}
+            className="reset-icon"
+          >
+            <RestartAltIcon />
+          </IconButton>
         </div>
       </div>
     </div>
