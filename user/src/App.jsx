@@ -296,16 +296,16 @@ const backgroundNotes = [
 const mainNotes = ["A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4"].reverse();
 
 // Function to divide main sequence in 8 compass
-const chunkSequence = (sequence, size) => {
-  return sequence.reduce((acc, note, index) => {
-    const chunkIndex = Math.floor(index / size);
-    if (!acc[chunkIndex]) {
-      acc[chunkIndex] = []; // start a new chunk
-    }
-    acc[chunkIndex].push(note);
-    return acc;
-  }, []);
-};
+// const chunkSequence = (sequence, size) => {
+//   return sequence.reduce((acc, note, index) => {
+//     const chunkIndex = Math.floor(index / size);
+//     if (!acc[chunkIndex]) {
+//       acc[chunkIndex] = []; // start a new chunk
+//     }
+//     acc[chunkIndex].push(note);
+//     return acc;
+//   }, []);
+// };
 
 // Number of compass and notes per compass
 const notesPerCompass = 4;
@@ -365,7 +365,7 @@ export default function App() {
 
   // Main Synths
   const mainSynths = useMemo(() => {
-    const mainAmSynth = new Tone.AMSynth({
+    const mainAmSynth = new Tone.FMSynth({
       volume: mainVolumeCommitted,
     })
       .chain(reverb, tremolo)
@@ -424,7 +424,7 @@ export default function App() {
 
   // Background Synths
   const backgroundSynths = useMemo(() => {
-    const backAmSynth = new Tone.AMSynth({
+    const backAmSynth = new Tone.FMSynth({
       volume: backgroundVolumeCommitted,
     })
       .chain(reverb, tremolo)
@@ -688,6 +688,14 @@ export default function App() {
       Array.from({ length: compass * notesPerCompass }).fill(null),
     );
     setBackgroundSequence(Array.from({ length: compass * 4 }).fill(null));
+    setMainVolume(-10);
+    setMainVolumeCommitted(-10);
+    setBackgroundVolume(-10);
+    setBackgroundVolumeCommitted(-10);
+    setTremoloFrequency(0);
+    setTremoloFrequencyCommitted(0);
+    setReverbDecay(1);
+    setReverbDecayCommitted(1);
   };
 
   const handleBpmChange = (event, newValue = 0) => {
@@ -811,7 +819,7 @@ export default function App() {
             <Stack
               spacing={1.7}
               direction="column"
-              sx={{ mb: 2, mt: 2, ml: 2 }}
+              sx={{ mb: 2, mt: 5, ml: 2 }}
               alignItems="center"
             >
               <WavesIcon />
@@ -899,6 +907,7 @@ export default function App() {
               <VolumeUp />
               <Slider
                 sx={{ width: "5px", height: "80px" }}
+                color="secondary"
                 orientation="vertical"
                 aria-label="backVolume"
                 min={-25}
@@ -930,11 +939,12 @@ export default function App() {
           <Stack
             spacing={1.7}
             direction="column"
-            sx={{ mb: 1, mt: 2, ml: 2 }}
+            sx={{ mb: 1, mt: 5, ml: 2 }}
             alignItems="center"
           >
             <SpatialAudioIcon />
             <Slider
+              color="secondary"
               sx={{ width: "5px", height: "120px" }}
               orientation="vertical"
               aria-label="reverb"
