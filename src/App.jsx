@@ -9,7 +9,7 @@ import * as Tone from "tone";
 import "./App.css";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
-import { IconButton, inputClasses } from "@mui/material";
+import { IconButton } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import PianoIcon from "@mui/icons-material/Piano";
@@ -28,258 +28,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import TimerIcon from "@mui/icons-material/Timer";
 import { sequenceExample1, sequenceExample2 } from "./helper";
-
-// notes = ["C", "D", "E", "F", "G", "A", "B"]
-// octaves = [3, 4, 5]
-// A = La, B = Si, C = Dó, D = Ré, E = Mi, F = Fa, G = Sol
-// C, D, E, F, G, A, B
-// 1. Dó | 2. Ré | 3. Mi | 4. Fa | 5. Sol | 6. Lá | 7. Si  ()
-
-// Low sequence
-// Main
-// ["A3", "B3", "C4", "D4", "E4", "D4", "C4", "B3", "A3", "B3", "C4", "D4", "E4", "D4", "C4", "B3", "A3", "B3", "C4", "D4", "E4", "D4", "C4", "B3", "A3", "B3", "C4", "D4", "E4", "D4", "C4", "B3" ]
-// Back
-// ["C2", null, null, null, "C2", null, null, null, "G2", null, null, null, "G2", null, null, null, "C2", null, null, null, "C2", null, null, null, "G2", null, null, null, "G2", null, null, null]
-
-// const sampler = new Tone.Sampler({
-//   urls: {
-//     A1: "A1.mp3",
-//     A2: "A2.mp3",
-//   },
-//   baseUrl: "https://tonejs.github.io/audio/casio/",
-// }).toDestination();
-
-//Main Sequence Buffers
-const buffer1 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A0.mp3",
-);
-const buffer2 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C1.mp3",
-);
-const buffer3 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds1.mp3",
-);
-const buffer4 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs1.mp3",
-);
-const buffer5 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A1.mp3",
-);
-const buffer6 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C2.mp3",
-);
-const buffer7 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds2.mp3",
-);
-const buffer8 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs2.mp3",
-);
-const buffer9 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A2.mp3",
-);
-const buffer10 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C3.mp3",
-);
-const buffer11 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds3.mp3",
-);
-const buffer12 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs3.mp3",
-);
-const buffer13 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A3.mp3",
-);
-const buffer14 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C4.mp3",
-);
-const buffer15 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds4.mp3",
-);
-const buffer16 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs4.mp3",
-);
-const buffer17 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A4.mp3",
-);
-const buffer18 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C5.mp3",
-);
-const buffer19 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds5.mp3",
-);
-const buffer20 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs5.mp3",
-);
-const buffer21 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A5.mp3",
-);
-const buffer22 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C6.mp3",
-);
-const buffer23 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds6.mp3",
-);
-const buffer24 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs6.mp3",
-);
-const buffer25 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A6.mp3",
-);
-const buffer26 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C7.mp3",
-);
-const buffer27 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds7.mp3",
-);
-const buffer28 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs7.mp3",
-);
-const buffer29 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A7.mp3",
-);
-const buffer30 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C8.mp3",
-);
-
-//Background Sequence Buffers
-const buffer31 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A0.mp3",
-);
-const buffer32 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C1.mp3",
-);
-const buffer33 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds1.mp3",
-);
-const buffer34 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs1.mp3",
-);
-const buffer35 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A1.mp3",
-);
-const buffer36 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C2.mp3",
-);
-const buffer37 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds2.mp3",
-);
-const buffer38 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs2.mp3",
-);
-const buffer39 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A2.mp3",
-);
-const buffer40 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C3.mp3",
-);
-const buffer41 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds3.mp3",
-);
-const buffer42 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs3.mp3",
-);
-const buffer43 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A3.mp3",
-);
-const buffer44 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C4.mp3",
-);
-const buffer45 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds4.mp3",
-);
-const buffer46 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs4.mp3",
-);
-const buffer47 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A4.mp3",
-);
-const buffer48 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C5.mp3",
-);
-const buffer49 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds5.mp3",
-);
-const buffer50 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs5.mp3",
-);
-const buffer51 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A5.mp3",
-);
-const buffer52 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C6.mp3",
-);
-const buffer53 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds6.mp3",
-);
-const buffer54 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs6.mp3",
-);
-const buffer55 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A6.mp3",
-);
-const buffer56 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C7.mp3",
-);
-const buffer57 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Ds7.mp3",
-);
-const buffer58 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/Fs7.mp3",
-);
-const buffer59 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/A7.mp3",
-);
-const buffer60 = new Tone.Buffer(
-  "https://tonejs.github.io/audio/salamander/C8.mp3",
-);
-
-//Instruments
-// const piano = new Tone.Sampler({
-//   volume: -10,
-//   urls: {
-//     A0: "A0.mp3",
-//     C1: "C1.mp3",
-//     "D#1": "Ds1.mp3",
-//     "F#1": "Fs1.mp3",
-//     A1: "A1.mp3",
-//     C2: "C2.mp3",
-//     "D#2": "Ds2.mp3",
-//     "F#2": "Fs2.mp3",
-//     A2: "A2.mp3",
-//     C3: "C3.mp3",
-//     "D#3": "Ds3.mp3",
-//     "F#3": "Fs3.mp3",
-//     A3: "A3.mp3",
-//     C4: "C4.mp3",
-//     "D#4": "Ds4.mp3",
-//     "F#4": "Fs4.mp3",
-//     A4: "A4.mp3",
-//     C5: "C5.mp3",
-//     "D#5": "Ds5.mp3",
-//     "F#5": "Fs5.mp3",
-//     A5: "A5.mp3",
-//     C6: "C6.mp3",
-//     "D#6": "Ds6.mp3",
-//     "F#6": "Fs6.mp3",
-//     A6: "A6.mp3",
-//     C7: "C7.mp3",
-//     "D#7": "Ds7.mp3",
-//     "F#7": "Fs7.mp3",
-//     A7: "A7.mp3",
-//     C8: "C8.mp3",
-//   },
-//   baseUrl: "https://tonejs.github.io/audio/salamander/",
-// })
-//   .chain(tremolo, reverb)
-//   .toDestination();
-
-// const instruments = {
-//   piano: piano,
-//   amSynth: amSynth,
-//   basicSynth: basicSynth,
-// };
+import * as Buffer from "./buffers";
 
 // Notes scale
 const backgroundNotes = [
@@ -295,25 +45,9 @@ const backgroundNotes = [
 
 const mainNotes = ["A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4"].reverse();
 
-// Function to divide main sequence in 8 compass
-// const chunkSequence = (sequence, size) => {
-//   return sequence.reduce((acc, note, index) => {
-//     const chunkIndex = Math.floor(index / size);
-//     if (!acc[chunkIndex]) {
-//       acc[chunkIndex] = []; // start a new chunk
-//     }
-//     acc[chunkIndex].push(note);
-//     return acc;
-//   }, []);
-// };
-
 // Number of compass and notes per compass
 const notesPerCompass = 4;
 const compass = 8;
-
-// 1 = 60 bpm
-// 2 = 30 bpm
-// 0.5 = 120 bpm
 
 export default function App() {
   const [backgroundInstrument, setBackgroundInstrument] = useState("piano");
@@ -374,36 +108,36 @@ export default function App() {
     const mainPiano = new Tone.Sampler({
       volume: mainVolumeCommitted,
       urls: {
-        A0: buffer1,
-        C1: buffer2,
-        "D#1": buffer3,
-        "F#1": buffer4,
-        A1: buffer5,
-        C2: buffer6,
-        "D#2": buffer7,
-        "F#2": buffer8,
-        A2: buffer9,
-        C3: buffer10,
-        "D#3": buffer11,
-        "F#3": buffer12,
-        A3: buffer13,
-        C4: buffer14,
-        "D#4": buffer15,
-        "F#4": buffer16,
-        A4: buffer17,
-        C5: buffer18,
-        "D#5": buffer19,
-        "F#5": buffer20,
-        A5: buffer21,
-        C6: buffer22,
-        "D#6": buffer23,
-        "F#6": buffer24,
-        A6: buffer25,
-        C7: buffer26,
-        "D#7": buffer27,
-        "F#7": buffer28,
-        A7: buffer29,
-        C8: buffer30,
+        A0: Buffer.buffer1,
+        C1: Buffer.buffer2,
+        "D#1": Buffer.buffer3,
+        "F#1": Buffer.buffer4,
+        A1: Buffer.buffer5,
+        C2: Buffer.buffer6,
+        "D#2": Buffer.buffer7,
+        "F#2": Buffer.buffer8,
+        A2: Buffer.buffer9,
+        C3: Buffer.buffer10,
+        "D#3": Buffer.buffer11,
+        "F#3": Buffer.buffer12,
+        A3: Buffer.buffer13,
+        C4: Buffer.buffer14,
+        "D#4": Buffer.buffer15,
+        "F#4": Buffer.buffer16,
+        A4: Buffer.buffer17,
+        C5: Buffer.buffer18,
+        "D#5": Buffer.buffer19,
+        "F#5": Buffer.buffer20,
+        A5: Buffer.buffer21,
+        C6: Buffer.buffer22,
+        "D#6": Buffer.buffer23,
+        "F#6": Buffer.buffer24,
+        A6: Buffer.buffer25,
+        C7: Buffer.buffer26,
+        "D#7": Buffer.buffer27,
+        "F#7": Buffer.buffer28,
+        A7: Buffer.buffer29,
+        C8: Buffer.buffer30,
       },
     })
       .connect(reverb, tremolo)
@@ -433,36 +167,36 @@ export default function App() {
     const backPiano = new Tone.Sampler({
       volume: backgroundVolumeCommitted,
       urls: {
-        A0: buffer31,
-        C1: buffer32,
-        "D#1": buffer33,
-        "F#1": buffer34,
-        A1: buffer35,
-        C2: buffer36,
-        "D#2": buffer37,
-        "F#2": buffer38,
-        A2: buffer39,
-        C3: buffer40,
-        "D#3": buffer41,
-        "F#3": buffer42,
-        A3: buffer43,
-        C4: buffer44,
-        "D#4": buffer45,
-        "F#4": buffer46,
-        A4: buffer47,
-        C5: buffer48,
-        "D#5": buffer49,
-        "F#5": buffer50,
-        A5: buffer51,
-        C6: buffer52,
-        "D#6": buffer53,
-        "F#6": buffer54,
-        A6: buffer55,
-        C7: buffer56,
-        "D#7": buffer57,
-        "F#7": buffer58,
-        A7: buffer59,
-        C8: buffer60,
+        A0: Buffer.buffer31,
+        C1: Buffer.buffer32,
+        "D#1": Buffer.buffer33,
+        "F#1": Buffer.buffer34,
+        A1: Buffer.buffer35,
+        C2: Buffer.buffer36,
+        "D#2": Buffer.buffer37,
+        "F#2": Buffer.buffer38,
+        A2: Buffer.buffer39,
+        C3: Buffer.buffer40,
+        "D#3": Buffer.buffer41,
+        "F#3": Buffer.buffer42,
+        A3: Buffer.buffer43,
+        C4: Buffer.buffer44,
+        "D#4": Buffer.buffer45,
+        "F#4": Buffer.buffer46,
+        A4: Buffer.buffer47,
+        C5: Buffer.buffer48,
+        "D#5": Buffer.buffer49,
+        "F#5": Buffer.buffer50,
+        A5: Buffer.buffer51,
+        C6: Buffer.buffer52,
+        "D#6": Buffer.buffer53,
+        "F#6": Buffer.buffer54,
+        A6: Buffer.buffer55,
+        C7: Buffer.buffer56,
+        "D#7": Buffer.buffer57,
+        "F#7": Buffer.buffer58,
+        A7: Buffer.buffer59,
+        C8: Buffer.buffer60,
       },
     })
       .chain(reverb, tremolo)
@@ -840,27 +574,6 @@ export default function App() {
               <WavesIcon sx={{ transform: "scale(0.8)" }} />
             </Stack>
           </Box>
-          {/* <Box sx={{ width: '120px' }}>
-            <Stack
-              spacing={1.2}
-              direction="row"
-              sx={{ mb: 1, mt: 2 }}
-              alignItems="center"
-            >
-              <TimerIcon sx={{ transform: 'scale(0.8)' }} />
-              <Slider
-                aria-label="bpm"
-                value={numberOfBeats}
-                onChange={handleBpmChange}
-                onChangeCommitted={handleChangeBpmCommited}
-                step={10}
-                marks
-                min={40}
-                max={240}
-              />
-              <TimerIcon />
-            </Stack>
-          </Box> */}
         </div>
       </div>
       <div className="back-sequence-container">
