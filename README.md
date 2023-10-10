@@ -1,20 +1,21 @@
-# Soundscapes
+# SoundScapes - Music Sequencer
 
-## **mvp project by isa**
+SoundScapes is a **web-based music sequencer** with a interactive interface to create sequences of sound with different options of instruments and effects.
 
+![SoundScapes Music Sequencer](./public/images/soundscapes-home.png)
 
+## About the project
 
-The project idea is a synthesizer where the user can create generative sequences of sound with different options of sounds, a sequencer and modulation.
+SoundScapes is a frontend project built with React to provide the possibility of delivering music according to user inputs.
+The project use **Tone.js** as the _Web Audio Framework_ for creating interactive music in the browser.
 
-## Tech stack and installation
+Tech Stack:
 
-The project has been created using React.
-The library used for the sound generation and interface is tone.js.
-The back has not been built yet.
+> **Tone.js** for creating synthesizers and effects;
 
-**Installation of Tone.js**
+> **React** for the user interface;
 
-[Tone.js](https://tonejs.github.io/)
+> **Express** and **Node** for the server side / application layer;
 
 To install:
 
