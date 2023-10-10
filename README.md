@@ -2,14 +2,14 @@
 
 ## **mvp project by isa**
 
-_-- not finished yet!_
+
 
 The project idea is a synthesizer where the user can create generative sequences of sound with different options of sounds, a sequencer and modulation.
 
 ## Tech stack and installation
 
 The project has been created using React.
-The llibrary used for the sound generation and interface is tone.js.
+The library used for the sound generation and interface is tone.js.
 The back has not been built yet.
 
 **Installation of Tone.js**
