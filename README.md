@@ -7,7 +7,7 @@ SoundScapes is a **web-based music sequencer** to interactively create sequences
 ## About the project
 
 SoundScapes is a frontend project built with React to provide the possibility of delivering music according to user inputs.
-The project use **Tone.js** as the _Web Audio Framework_ for creating interactive music in the browser.
+The project uses **Tone.js** as the _Web Audio Framework_ for creating interactive music in the browser.
 
 **Tech Stack**
 
