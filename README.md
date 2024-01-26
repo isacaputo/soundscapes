@@ -15,7 +15,7 @@ The project uses **Tone.js** as the _Web Audio Framework_ for creating interacti
 
 > **React** for the user interface;
 
-> **Express** and **Node** for the server side / application layer;
+> **Express** and **Node** for the server side.
 
 **Sound Library**
 
@@ -26,7 +26,6 @@ The project uses **Tone.js** as the _Web Audio Framework_ for creating interacti
 ## Client side
 
 - **React Router** for the client side routing;
-- **React Context** for sharing data across multiple components;
 - **Vite** as a local development server for providing better performance for the web application;
 - **Material UI** as the React component library.
 
@@ -43,5 +42,5 @@ The project uses **Tone.js** as the _Web Audio Framework_ for creating interacti
 
 **Effects**
 
-- The possibility of applying two different to the sequence: Tremolo and Reverb;
+- The possibility of applying two different effects to the sequence: Tremolo and Reverb;
 - Adjustable intensity for the music effects.
