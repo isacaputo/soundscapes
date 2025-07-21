@@ -35,9 +35,7 @@ import {
   compass,
 } from "../helpers/const";
 
-// Main App Component (wrapped with providers)
 export const AppContent = () => {
-  // Get state from contexts
   const { play, handleTogglePlay, countTempo } = usePlayback();
   const {
     // Instruments
