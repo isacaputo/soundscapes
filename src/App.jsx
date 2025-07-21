@@ -73,6 +73,8 @@ export default function App() {
   const [numberOfBeats, setNumberOfBeats] = useState(120);
   const [numberOfBeatsCommitted, setNumberOfBeatsCommitted] = useState(120);
 
+  const [audioInitialized, setAudioInitialized] = useState(false);
+
   const [backgroundSequence, setBackgroundSequence] = useState(
     sequenceExample1.backSequence,
   );
@@ -82,23 +84,27 @@ export default function App() {
 
   // Effects
   const tremolo = useMemo(() => {
+    if (!audioInitialized) return null;
     return new Tone.Tremolo({
       frequency: tremoloFrequencyCommitted, // step="2" min="0" max="15
       depth: 0.8,
     })
       .toDestination()
       .start();
-  }, [tremoloFrequencyCommitted]);
+  }, [tremoloFrequencyCommitted, audioInitialized]);
 
   const reverb = useMemo(() => {
+    if (!audioInitialized) return null;
     return new Tone.Reverb({
       decay: reverbDecayCommitted, // step="1" min="0" max="10"
       wet: 1,
     }).toDestination();
-  }, [reverbDecayCommitted]);
+  }, [reverbDecayCommitted, audioInitialized]);
 
   // Main Synths
   const mainSynths = useMemo(() => {
+    if (!audioInitialized || !reverb || !tremolo) return null;
+
     const mainAmSynth = new Tone.FMSynth({
       volume: mainVolumeCommitted,
     })
@@ -154,10 +160,12 @@ export default function App() {
       amSynth: mainAmSynth,
       basicSynth: mainBasicSynth,
     };
-  }, [mainVolumeCommitted, reverb, tremolo]);
+  }, [mainVolumeCommitted, reverb, tremolo, audioInitialized]);
 
   // Background Synths
   const backgroundSynths = useMemo(() => {
+    if (!audioInitialized || !reverb || !tremolo) return null;
+
     const backAmSynth = new Tone.FMSynth({
       volume: backgroundVolumeCommitted,
     })
@@ -213,7 +221,7 @@ export default function App() {
       amSynth: backAmSynth,
       basicSynth: backBasicSynth,
     };
-  }, [backgroundVolumeCommitted, tremolo, reverb]);
+  }, [backgroundVolumeCommitted, tremolo, reverb, audioInitialized]);
 
   useEffect(() => {
     Tone.Transport.bpm.value = numberOfBeatsCommitted;
@@ -270,6 +278,9 @@ export default function App() {
 
   // Use Effects
   useEffect(() => {
+    // Only create sequences if synths are available
+    if (!backgroundSynths || !mainSynths) return;
+
     const bSequence = new Tone.Sequence(
       (time, note) => {
         setPlay(true);
@@ -306,9 +317,14 @@ export default function App() {
     tempo,
   ]);
 
-  const handleTogglePlay = () => {
+  const handleTogglePlay = async () => {
     const nextPlayState = !play;
     if (nextPlayState) {
+      // Start the audio context if it's suspended
+      if (Tone.context.state === "suspended") {
+        await Tone.start();
+        setAudioInitialized(true);
+      }
       Tone.Transport.start();
       startCountTempo();
     } else {
@@ -319,14 +335,22 @@ export default function App() {
     setPlay(nextPlayState);
   };
 
-  const handleToggleNoteBackSeq = (note, index, isBackNoteActive) => {
+  const handleToggleNoteBackSeq = async (note, index, isBackNoteActive) => {
     if (!isBackNoteActive && !play) {
-      const now = Tone.now();
-      backgroundSynths[backgroundInstrument].triggerAttackRelease(
-        note,
-        "8n",
-        now,
-      );
+      // Start the audio context if it's suspended
+      if (Tone.context.state === "suspended") {
+        await Tone.start();
+        setAudioInitialized(true);
+      }
+      // Only play if synths are available
+      if (backgroundSynths) {
+        const now = Tone.now();
+        backgroundSynths[backgroundInstrument].triggerAttackRelease(
+          note,
+          "8n",
+          now,
+        );
+      }
     }
     const copyBackgroundSequence = [...backgroundSequence];
     copyBackgroundSequence[index] =
@@ -336,10 +360,18 @@ export default function App() {
     setBackgroundSequence(copyBackgroundSequence);
   };
 
-  const handleToggleNoteMainSeq = (note, index, isMainNoteActive) => {
+  const handleToggleNoteMainSeq = async (note, index, isMainNoteActive) => {
     if (!isMainNoteActive && !play) {
-      const now = Tone.now();
-      mainSynths[mainInstrument].triggerAttackRelease(note, "8n", now);
+      // Start the audio context if it's suspended
+      if (Tone.context.state === "suspended") {
+        await Tone.start();
+        setAudioInitialized(true);
+      }
+      // Only play if synths are available
+      if (mainSynths) {
+        const now = Tone.now();
+        mainSynths[mainInstrument].triggerAttackRelease(note, "8n", now);
+      }
     }
     const copyMainSequence = [...mainSequence];
     copyMainSequence[index] =
