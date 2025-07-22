@@ -1,10 +1,7 @@
-// Layout Components
 export { Header } from "./Header";
 export { MainSequenceSection } from "./MainSequenceSection";
 export { BackgroundSequenceSection } from "./BackgroundSequenceSection";
 export { ControlsSection } from "./ControlsSection";
-
-// Reusable UI Components
 export { InstrumentSelector } from "./InstrumentSelector";
 export { VolumeControl } from "./VolumeControl";
 export { EffectControl } from "./EffectControl";
