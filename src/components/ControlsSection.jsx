@@ -44,6 +44,15 @@ export const ControlsSection = () => {
           size="medium"
           onClick={handleTogglePlay}
           className="play-stop-icon"
+          disableRipple
+          sx={{
+            "&:focus": {
+              outline: "none",
+            },
+            "&:focus-visible": {
+              outline: "none",
+            },
+          }}
         >
           {play ? (
             <StopCircleIcon />
