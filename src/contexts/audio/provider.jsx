@@ -50,22 +50,56 @@ export const AudioProvider = ({ children }) => {
   // Tremolo effect
   const tremolo = useMemo(() => {
     if (!audioInitialized) return null;
-    return new Tone.Tremolo({
-      frequency: tremoloFrequencyCommitted, // step="2" min="0" max="15
-      depth: 0.8,
-    })
-      .toDestination()
-      .start();
-  }, [tremoloFrequencyCommitted, audioInitialized]);
+    const tremoloEffect = new Tone.Tremolo({
+      frequency: 1, // Default frequency
+      depth: 0.3, // Reduced from 0.8 to make effect more subtle
+    }).toDestination();
+
+    // Start tremolo and set initial wet value
+    tremoloEffect.start();
+    tremoloEffect.wet.value = tremoloFrequencyCommitted > 0 ? 1 : 0;
+    return tremoloEffect;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioInitialized]); // Remove tremoloFrequencyCommitted dependency
+
+  // Update tremolo frequency when it changes
+  useEffect(() => {
+    if (tremolo) {
+      if (tremoloFrequencyCommitted === 0) {
+        // Turn off tremolo by setting wet to 0
+        tremolo.wet.value = 0;
+      } else {
+        // Turn on tremolo and set frequency
+        tremolo.wet.value = 1;
+        tremolo.frequency.value = tremoloFrequencyCommitted;
+      }
+    }
+  }, [tremolo, tremoloFrequencyCommitted]);
 
   // Reverb effect
   const reverb = useMemo(() => {
     if (!audioInitialized) return null;
-    return new Tone.Reverb({
+    const reverbEffect = new Tone.Reverb({
       decay: reverbDecayCommitted, // step="1" min="0" max="10"
-      wet: 1,
+      wet: reverbDecayCommitted > 0 ? 1 : 0, // Turn off when decay is 0
     }).toDestination();
-  }, [reverbDecayCommitted, audioInitialized]);
+    return reverbEffect;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioInitialized]); // Remove reverbDecayCommitted dependency
+
+  // Update reverb decay when it changes
+  useEffect(() => {
+    if (reverb) {
+      if (reverbDecayCommitted === 0) {
+        // Turn off reverb by setting wet to 0
+        reverb.wet.value = 0;
+      } else {
+        // Turn on reverb and set decay
+        reverb.wet.value = 1;
+        reverb.decay = reverbDecayCommitted;
+      }
+    }
+  }, [reverb, reverbDecayCommitted]);
 
   // Main Synths
   const mainSynths = useMemo(() => {
@@ -73,22 +107,26 @@ export const AudioProvider = ({ children }) => {
 
     const mainAmSynth = new Tone.FMSynth({
       volume: mainVolumeCommitted,
-    })
-      .chain(reverb, tremolo)
-      .toDestination();
+    });
 
     const mainPiano = new Tone.Sampler({
       volume: mainVolumeCommitted,
       urls: mainPianoUrls,
-    })
-      .connect(reverb, tremolo)
-      .toDestination();
+    });
 
     const mainBasicSynth = new Tone.Synth({
       volume: mainVolumeCommitted,
-    })
-      .connect(reverb, tremolo)
-      .toDestination();
+    });
+
+    // Connect each synth to both effects in parallel, then to destination
+    mainAmSynth.connect(reverb);
+    mainAmSynth.connect(tremolo);
+
+    mainPiano.connect(reverb);
+    mainPiano.connect(tremolo);
+
+    mainBasicSynth.connect(reverb);
+    mainBasicSynth.connect(tremolo);
 
     return {
       piano: mainPiano,
@@ -103,22 +141,26 @@ export const AudioProvider = ({ children }) => {
 
     const backAmSynth = new Tone.FMSynth({
       volume: backgroundVolumeCommitted,
-    })
-      .chain(reverb, tremolo)
-      .toDestination();
+    });
 
     const backPiano = new Tone.Sampler({
       volume: backgroundVolumeCommitted,
       urls: backgroundPianoUrls,
-    })
-      .chain(reverb, tremolo)
-      .toDestination();
+    });
 
     const backBasicSynth = new Tone.Synth({
       volume: backgroundVolumeCommitted,
-    })
-      .chain(reverb, tremolo)
-      .toDestination();
+    });
+
+    // Connect each synth to both effects in parallel, then to destination
+    backAmSynth.connect(reverb);
+    backAmSynth.connect(tremolo);
+
+    backPiano.connect(reverb);
+    backPiano.connect(tremolo);
+
+    backBasicSynth.connect(reverb);
+    backBasicSynth.connect(tremolo);
 
     return {
       piano: backPiano,
