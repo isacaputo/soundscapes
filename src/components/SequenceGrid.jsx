@@ -4,6 +4,7 @@ import * as Tone from "tone";
 import { NoteButton } from "./NoteButton";
 import { useAudio } from "../contexts/audio";
 import { usePlayback } from "../contexts/playback";
+import { mainPianoUrls } from "../helpers/const";
 
 export const SequenceGrid = ({
   notes,
@@ -20,6 +21,7 @@ export const SequenceGrid = ({
     backgroundSynths,
     mainInstrument,
     backgroundInstrument,
+    audioInitialized,
     setAudioInitialized,
   } = useAudio();
 
@@ -27,20 +29,41 @@ export const SequenceGrid = ({
 
   const sequence = type === "main" ? mainSequence : backgroundSequence;
   const setSequence = type === "main" ? setMainSequence : setBackgroundSequence;
-  const synths = type === "main" ? mainSynths : backgroundSynths;
-  const instrument = type === "main" ? mainInstrument : backgroundInstrument;
 
   const handleNoteToggle = async (note, index, isNoteActive) => {
     if (!isNoteActive && !play) {
-      // Start the audio context if it's suspended
+      // Initialize audio if needed
       if (Tone.context.state === "suspended") {
         await Tone.start();
-        setAudioInitialized(true);
       }
-      // Only play if synths are available
-      if (synths) {
+
+      // Try to use existing synths first
+      const synthsToUse = type === "main" ? mainSynths : backgroundSynths;
+      const instrumentToUse =
+        type === "main" ? mainInstrument : backgroundInstrument;
+
+      if (synthsToUse && synthsToUse[instrumentToUse]) {
+        // Use existing synths if available
         const now = Tone.now();
-        synths[instrument].triggerAttackRelease(note, "8n", now);
+        synthsToUse[instrumentToUse].triggerAttackRelease(note, "8n", now);
+      } else {
+        // Create a piano sampler for immediate feedback
+        const previewSynth = new Tone.Sampler({
+          volume: -10,
+          urls: mainPianoUrls,
+        }).toDestination();
+
+        const now = Tone.now();
+        previewSynth.triggerAttackRelease(note, "8n", now);
+
+        // Clean up and initialize for next time
+        setTimeout(() => {
+          previewSynth.dispose();
+        }, 1000);
+
+        if (!audioInitialized) {
+          setAudioInitialized(true);
+        }
       }
     }
     const copySequence = [...sequence];
@@ -48,6 +71,7 @@ export const SequenceGrid = ({
       sequence[index] && sequence[index] === note ? null : note;
     setSequence(copySequence);
   };
+
   const getNext4ndIndex = (index) => {
     return index % 4 === 0;
   };
@@ -66,7 +90,6 @@ export const SequenceGrid = ({
     });
 
   if (type === "background") {
-    // Background sequence rendering (simpler layout)
     return (
       <div className="back-sequence">
         {sequence.map((note, index) => {
@@ -83,7 +106,6 @@ export const SequenceGrid = ({
     );
   }
 
-  // Main sequence rendering (complex layout with highlighting)
   let countBlock = 0;
 
   return (
