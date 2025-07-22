@@ -22,7 +22,13 @@ export const Header = () => {
   };
   return (
     <div>
-      <img src={`/images/soundscapes-logo.png`} className="logo-image" />
+      <header className="header">
+        <img
+          src={`/images/soundscapes_logo.svg`}
+          className="logo-image"
+          alt="Soundscapes Logo"
+        />
+      </header>
       <div className="select-established-sequence">
         <FormControl>
           <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
