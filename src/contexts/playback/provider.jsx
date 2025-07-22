@@ -8,6 +8,7 @@ import { notesPerCompass } from "../../helpers/const";
 export const PlaybackProvider = ({ children }) => {
   // Get audio context
   const {
+    audioInitialized,
     setAudioInitialized,
     mainSequence,
     backgroundSequence,
@@ -66,13 +67,14 @@ export const PlaybackProvider = ({ children }) => {
     const nextPlayState = !play;
 
     if (nextPlayState) {
-      // Start the audio context if it's suspended
-      if (Tone.context.state === "suspended") {
+      // Always start the audio context and initialize audio
+      if (Tone.context.state === "suspended" || !audioInitialized) {
+        console.log("Initializing audio context");
         await Tone.start();
         setAudioInitialized(true);
       }
 
-      // If synths aren't ready yet, mark as pending
+      // Check again after initialization
       if (!backgroundSynths || !mainSynths) {
         console.log("Synths not ready yet, marking as pending");
         pendingPlayRef.current = true;
@@ -206,7 +208,6 @@ export const PlaybackProvider = ({ children }) => {
     mainInstrument,
     tempo,
   ]);
-
   return (
     <PlaybackContext.Provider
       value={{
