@@ -1,7 +1,6 @@
 import React from "react";
 import "./AppContent.css";
 
-// Import new components
 import {
   Header,
   MainSequenceSection,
