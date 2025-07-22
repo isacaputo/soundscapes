@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import * as Tone from "tone";
 import { AudioContext } from "./context";
@@ -12,7 +6,6 @@ import {
   backgroundPianoUrls,
   mainPianoUrls,
   sequenceExample1,
-  sequenceExample2,
 } from "../../helpers/const";
 
 export const AudioProvider = ({ children }) => {
