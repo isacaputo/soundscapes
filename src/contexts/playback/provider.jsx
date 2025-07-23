@@ -53,7 +53,6 @@ export const PlaybackProvider = ({ children }) => {
     clearInterval(intervalRef.current);
   }, []);
 
-  // Cleanup interval
   useEffect(() => {
     return () => {
       if (intervalRef.current) {
@@ -109,9 +108,9 @@ export const PlaybackProvider = ({ children }) => {
       (time, note) => {
         if (note) {
           backgroundSynths[backgroundInstrument].triggerAttackRelease(
-            note,
-            tempo * notesPerCompass,
-            time,
+            note, // ← Note to play
+            tempo * notesPerCompass, // ← Duration of the note
+            time, // ← When to play (scheduling)
           );
         }
       },
@@ -123,9 +122,9 @@ export const PlaybackProvider = ({ children }) => {
       (time, note) => {
         if (note) {
           mainSynths[mainInstrument].triggerAttackRelease(
-            note,
-            tempo * 2,
-            time,
+            note, // ← Note to play
+            tempo * 2, // ← Duration of the note (2x for main)
+            time, // ← When to play (scheduling)
           );
         }
       },
@@ -137,7 +136,7 @@ export const PlaybackProvider = ({ children }) => {
     sequencesRef.current.background = bSequence;
     sequencesRef.current.main = mSequence;
 
-    // Start sequences at position 0
+    // Prepare sequences to start at position 0
     bSequence.start(0);
     mSequence.start(0);
   }, [
