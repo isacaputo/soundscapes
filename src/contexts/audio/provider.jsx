@@ -2,11 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import * as Tone from "tone";
 import { AudioContext } from "./context";
-import {
-  backgroundPianoUrls,
-  mainPianoUrls,
-  sequenceExample1,
-} from "../../helpers/const";
+import { pianoUrls, sequenceExample1 } from "../../helpers/const";
 
 export const AudioProvider = ({ children }) => {
   // Audio state
@@ -73,12 +69,12 @@ export const AudioProvider = ({ children }) => {
   const reverb = useMemo(() => {
     if (!audioInitialized) return null;
     const reverbEffect = new Tone.Reverb({
-      decay: reverbDecayCommitted, // step="1" min="0" max="10"
+      decay: reverbDecayCommitted,
       wet: reverbDecayCommitted > 0 ? 1 : 0, // Turn off when decay is 0
     }).toDestination();
     return reverbEffect;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioInitialized]); // Remove reverbDecayCommitted dependency
+  }, [audioInitialized]);
 
   // Update reverb decay when it changes
   useEffect(() => {
@@ -104,7 +100,7 @@ export const AudioProvider = ({ children }) => {
 
     const mainPiano = new Tone.Sampler({
       volume: mainVolumeCommitted,
-      urls: mainPianoUrls,
+      urls: pianoUrls,
     });
 
     const mainBasicSynth = new Tone.Synth({
@@ -138,7 +134,7 @@ export const AudioProvider = ({ children }) => {
 
     const backPiano = new Tone.Sampler({
       volume: backgroundVolumeCommitted,
-      urls: backgroundPianoUrls,
+      urls: pianoUrls,
     });
 
     const backBasicSynth = new Tone.Synth({
