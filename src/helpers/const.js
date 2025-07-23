@@ -7,6 +7,7 @@ export const sequenceExample1 = {
     "A3",
     "D4",
     "A3",
+
     "F4",
     "A3",
     "D4",
@@ -16,6 +17,7 @@ export const sequenceExample1 = {
     "E4",
     "A3",
     "E4",
+
     "C4",
     "E4",
     "A3",
@@ -25,6 +27,7 @@ export const sequenceExample1 = {
     "E4",
     "G4",
     "E4",
+
     "C4",
     "E4",
     "G4",
@@ -34,6 +37,7 @@ export const sequenceExample1 = {
     "B3",
     "D4",
     "B3",
+
     "G4",
     "B3",
     "D4",
@@ -81,30 +85,37 @@ export const sequenceExample2 = {
     "C4",
     "E4",
     "B3",
+
     "C4",
     "E4",
     "B3",
     "D4",
+
     "C4",
     "E4",
     "F4",
     "D4",
+
     "C4",
     "D4",
     "C4",
     "D4",
+
     "F4",
     "E4",
     "D4",
     "C4",
+
     "D4",
     "G4",
     "F4",
     "E4",
+
     "B3",
     "A3",
     "B3",
     "D4",
+
     "E4",
     "B3",
     "A3",
@@ -115,30 +126,37 @@ export const sequenceExample2 = {
     null,
     null,
     null,
+
     "G2",
     null,
     null,
     null,
+
     "B2",
     null,
     null,
     null,
+
     "B2",
     null,
     null,
     null,
+
     "F2",
     null,
     null,
     null,
+
     "F2",
     null,
     null,
     null,
+
     "D2",
     null,
     null,
     null,
+
     "D2",
     null,
     null,
@@ -175,7 +193,7 @@ export const notesPerCompass = 4;
 export const compass = 8;
 
 // Main piano urls
-export const mainPianoUrls = {
+export const pianoUrls = {
   A0: Buffer.buffer1,
   C1: Buffer.buffer2,
   "D#1": Buffer.buffer3,
@@ -206,38 +224,4 @@ export const mainPianoUrls = {
   "F#7": Buffer.buffer28,
   A7: Buffer.buffer29,
   C8: Buffer.buffer30,
-};
-
-// Background piano urls
-export const backgroundPianoUrls = {
-  A0: Buffer.buffer31,
-  C1: Buffer.buffer32,
-  "D#1": Buffer.buffer33,
-  "F#1": Buffer.buffer34,
-  A1: Buffer.buffer35,
-  C2: Buffer.buffer36,
-  "D#2": Buffer.buffer37,
-  "F#2": Buffer.buffer38,
-  A2: Buffer.buffer39,
-  C3: Buffer.buffer40,
-  "D#3": Buffer.buffer41,
-  "F#3": Buffer.buffer42,
-  A3: Buffer.buffer43,
-  C4: Buffer.buffer44,
-  "D#4": Buffer.buffer45,
-  "F#4": Buffer.buffer46,
-  A4: Buffer.buffer47,
-  C5: Buffer.buffer48,
-  "D#5": Buffer.buffer49,
-  "F#5": Buffer.buffer50,
-  A5: Buffer.buffer51,
-  C6: Buffer.buffer52,
-  "D#6": Buffer.buffer53,
-  "F#6": Buffer.buffer54,
-  A6: Buffer.buffer55,
-  C7: Buffer.buffer56,
-  "D#7": Buffer.buffer57,
-  "F#7": Buffer.buffer58,
-  A7: Buffer.buffer59,
-  C8: Buffer.buffer60,
 };
