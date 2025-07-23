@@ -26,23 +26,49 @@ export const InstrumentSelector = ({
       <ToggleButton
         value="piano"
         aria-label="piano"
-        sx={orientation === "horizontal" ? {} : { maxHeight: "65px" }}
+        sx={{
+          ...(orientation === "horizontal" ? {} : { maxHeight: "65px" }),
+          "&.Mui-selected": {
+            backgroundColor: color,
+            "&:hover": {
+              backgroundColor: color,
+            },
+          },
+        }}
       >
-        <PianoIcon sx={{ color }} />
+        <PianoIcon sx={{ color: value === "piano" ? "white" : color }} />
       </ToggleButton>
       <ToggleButton
         value="amSynth"
         aria-label="am-synth"
-        sx={orientation === "horizontal" ? {} : { maxHeight: "65px" }}
+        sx={{
+          ...(orientation === "horizontal" ? {} : { maxHeight: "65px" }),
+          "&.Mui-selected": {
+            backgroundColor: color,
+            "&:hover": {
+              backgroundColor: color,
+            },
+          },
+        }}
       >
-        <RadioIcon sx={{ color }} />
+        <RadioIcon sx={{ color: value === "amSynth" ? "white" : color }} />
       </ToggleButton>
       <ToggleButton
         value="basicSynth"
         aria-label="basic-synth"
-        sx={orientation === "horizontal" ? {} : { maxHeight: "65px" }}
+        sx={{
+          ...(orientation === "horizontal" ? {} : { maxHeight: "65px" }),
+          "&.Mui-selected": {
+            backgroundColor: color,
+            "&:hover": {
+              backgroundColor: color,
+            },
+          },
+        }}
       >
-        <StraightenIcon sx={{ color }} />
+        <StraightenIcon
+          sx={{ color: value === "basicSynth" ? "white" : color }}
+        />
       </ToggleButton>
     </ToggleButtonGroup>
   );
