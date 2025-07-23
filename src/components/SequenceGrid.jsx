@@ -4,7 +4,7 @@ import * as Tone from "tone";
 import { NoteButton } from "./NoteButton";
 import { useAudio } from "../contexts/audio";
 import { usePlayback } from "../contexts/playback";
-import { mainPianoUrls } from "../helpers/const";
+import { pianoUrls } from "../helpers/const";
 
 export const SequenceGrid = ({
   notes,
@@ -50,7 +50,7 @@ export const SequenceGrid = ({
         // Create a piano sampler for immediate feedback
         const previewSynth = new Tone.Sampler({
           volume: -10,
-          urls: mainPianoUrls,
+          urls: pianoUrls,
         }).toDestination();
 
         const now = Tone.now();
@@ -66,6 +66,7 @@ export const SequenceGrid = ({
         }
       }
     }
+    // Toggle the note in the sequence
     const copySequence = [...sequence];
     copySequence[index] =
       sequence[index] && sequence[index] === note ? null : note;
