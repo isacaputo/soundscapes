@@ -31,6 +31,7 @@ export const BackgroundSequenceSection = () => {
   const handleReverbChange = (event, newValue) => {
     setReverbDecay(newValue);
   };
+
   return (
     <div className="back-sequence-container">
       <div className="synth-options">
