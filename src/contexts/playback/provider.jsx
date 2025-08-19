@@ -207,6 +207,7 @@ export const PlaybackProvider = ({ children }) => {
     mainInstrument,
     tempo,
   ]);
+
   return (
     <PlaybackContext.Provider
       value={{
