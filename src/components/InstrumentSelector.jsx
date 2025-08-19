@@ -9,10 +9,16 @@ import StraightenIcon from "@mui/icons-material/Straighten";
 export const InstrumentSelector = ({
   value,
   onChange,
-  color = "#5e17eb",
+  color,
   orientation = "vertical",
   size = "small",
 }) => {
+  const handleChange = (event, newValue) => {
+    if (newValue !== null) {
+      onChange(event, newValue);
+    }
+  };
+
   return (
     <ToggleButtonGroup
       defaultValue="piano"
@@ -20,8 +26,28 @@ export const InstrumentSelector = ({
       size={size}
       orientation={orientation}
       exclusive
-      onChange={onChange}
-      sx={{ width: "60px" }}
+      onChange={handleChange}
+      sx={{
+        width: "60px",
+        "& .MuiToggleButton-root": {
+          border: `1px solid ${color}`,
+          "&:focus": {
+            outline: "none",
+            border: "1px solid transparent",
+          },
+          "&.Mui-selected": {
+            border: "1px solid transparent",
+            "&:hover": {
+              backgroundColor: color,
+              border: "1px solid transparent",
+            },
+            "&:focus": {
+              outline: "none",
+              border: "1px solid transparent",
+            },
+          },
+        },
+      }}
     >
       <ToggleButton
         value="piano"
@@ -30,9 +56,6 @@ export const InstrumentSelector = ({
           ...(orientation === "horizontal" ? {} : { maxHeight: "65px" }),
           "&.Mui-selected": {
             backgroundColor: color,
-            "&:hover": {
-              backgroundColor: color,
-            },
           },
         }}
       >
@@ -45,9 +68,6 @@ export const InstrumentSelector = ({
           ...(orientation === "horizontal" ? {} : { maxHeight: "65px" }),
           "&.Mui-selected": {
             backgroundColor: color,
-            "&:hover": {
-              backgroundColor: color,
-            },
           },
         }}
       >
@@ -60,9 +80,6 @@ export const InstrumentSelector = ({
           ...(orientation === "horizontal" ? {} : { maxHeight: "65px" }),
           "&.Mui-selected": {
             backgroundColor: color,
-            "&:hover": {
-              backgroundColor: color,
-            },
           },
         }}
       >
