@@ -21,17 +21,14 @@ export const Header = () => {
     }
   };
   return (
-    <div>
-      <header className="header">
-        <img
-          src={`/images/soundscapes_logo.svg`}
-          className="logo-image"
-          alt="Soundscapes Logo"
-        />
-      </header>
+    <header className="header">
+      <img
+        src={`/soundscapes/images/soundscapes-logo.png`}
+        className="logo-image"
+        alt="Soundscapes Logo"
+      />
       <div className="select-established-sequence">
         <FormControl>
-          <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
           <RadioGroup
             size="small"
             row
@@ -39,11 +36,13 @@ export const Header = () => {
             name="row-radio-buttons-group"
             onChange={handleSequenceChange}
             defaultValue={"sequenceExample1"}
+            className="radio-group"
           >
             <FormControlLabel
               value="sequenceExample1"
               control={<Radio />}
               label="Sequence 01"
+              className="radio-label"
             />
             <FormControlLabel
               value="sequenceExample2"
@@ -53,6 +52,6 @@ export const Header = () => {
           </RadioGroup>
         </FormControl>
       </div>
-    </div>
+    </header>
   );
 };
