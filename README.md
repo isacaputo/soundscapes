@@ -25,7 +25,7 @@ The project uses **Tone.js** as the _Web Audio Framework_ for creating interacti
 
 ## Client side
 
-- **React Router** for the client side routing;
+- **React** for interactive frontend;
 - **Vite** as a local development server for providing better performance for the web application;
 - **Material UI** as the React component library.
 
