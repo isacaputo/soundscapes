@@ -1,4 +1,4 @@
-# 🎵 Soundscapes - Interactive Music Sequencer
+# 🎵 SoundScapes - Interactive Music Sequencer
 
 <div align="center">
   <img src="./public/images/soundscapes-logo.png" alt="SoundScapes Logo" width="200"/>
@@ -27,7 +27,7 @@
 
 ## About
 
-Soundscapes is a **web-based interactive music sequencer** that allows users to create and experiment with musical sequences in real-time. Built with modern web technologies, it provides an intuitive interface for music creation with multiple instruments, effects, and customization options.
+SoundScapes is a **web-based interactive music sequencer** that allows users to create and experiment with musical sequences in real-time. Built with modern web technologies, it provides an intuitive interface for music creation with multiple instruments, effects, and customization options.
 
 ![SoundScapes Interface](./public/images/soundscapes-home.png)
 
@@ -41,7 +41,7 @@ Soundscapes is a **web-based interactive music sequencer** that allows users to 
 
 ### Live Demo
 
-Experience Soundscapes live: **[https://isacaputo.github.io/soundscapes](https://isacaputo.github.io/soundscapes)**
+Experience SoundScapes live: **[https://isacaputo.github.io/soundscapes](https://isacaputo.github.io/soundscapes)**
 
 ## 🛠️ Tech Stack
 
