@@ -62,7 +62,20 @@ export const ControlsSection = () => {
         </IconButton>
       </div>
       <div className="reset-container">
-        <IconButton size="medium" onClick={handleReset} className="reset-icon">
+        <IconButton
+          size="medium"
+          onClick={handleReset}
+          className="reset-icon"
+          disableRipple
+          sx={{
+            "&:focus": {
+              outline: "none",
+            },
+            "&:focus-visible": {
+              outline: "none",
+            },
+          }}
+        >
           <RestartAltIcon />
         </IconButton>
       </div>
