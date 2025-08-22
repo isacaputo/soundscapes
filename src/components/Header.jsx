@@ -23,7 +23,7 @@ export const Header = () => {
   return (
     <header className="header">
       <img
-        src={`/soundscapes/images/soundscapes-logo.png`}
+        src={`/soundscapes/images/soundscapes-logo.svg`}
         className="logo-image"
         alt="Soundscapes Logo"
       />
