@@ -77,8 +77,11 @@
 
 .logo-image {
   margin-top: var(--spacing-md);
+  height: var(--logo-max-height);
+  width: var(--logo-max-width);
   max-height: var(--logo-max-height);
-  width: auto;
+  max-width: var(--logo-max-width);
+  object-fit: contain;
   display: flex;
   justify-content: center;
 }
