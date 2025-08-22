@@ -61,10 +61,6 @@
   align-items: stretch;
   padding-bottom: var(--spacing-bottom);
   width: 100%;
-  background-image: url("/images/soundscapes-wave.svg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
 }
 
 /* ==========================================================================
