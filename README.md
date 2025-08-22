@@ -1,7 +1,7 @@
 # 🎵 SoundScapes - Interactive Music Sequencer
 
 <div align="center">
-  <img src="./public/images/soundscapes-logo.png" alt="SoundScapes Logo" width="200"/>
+  <img src="./public/images/soundscapes-logo.svg" alt="SoundScapes Logo" width="200"/>
   
   <p>
     <a href="https://isacaputo.github.io/soundscapes">
